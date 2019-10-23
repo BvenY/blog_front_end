@@ -49,11 +49,20 @@ export default {
     align-items: center;
   }
   .window{
-    width: 30%;
-    height: 40%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    /*媒体查询不同屏幕大小适配*/
+    @media screen{
+      width: 35%;
+      height: 40%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      @media (max-width:425px){
+        width: 100%;
+      }
+      @media (max-width:768px) and (min-width: 425px){
+        width: 70%;
+      }
+    }
   }
   .img{
     width: 80px;
@@ -74,7 +83,7 @@ export default {
   }
   .description{
     margin-top: 5%;
-    width: 60%;
+    width: 50%;
     height: 10%;
     font-size: 1.3em;
     color: #F1F3F4;
@@ -90,13 +99,13 @@ export default {
   }
   .button_box{
     margin-top: 5%;
-    width: 80%;
+    width: 100%;
     height: 20%;
     display: flex;
     justify-content: center;
     align-items: center;
-  }
-  .button_box .ivu-btn{
-    margin-left: 20px;
+    .ivu-btn{
+      margin-left: 20px;
+    }
   }
 </style>
