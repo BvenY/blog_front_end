@@ -43,5 +43,11 @@ module.exports = {
     "no-unused-vars":2,
     //  不能使用alert
     "no-alert": 2,
+    //  禁止修改const声明的变量
+    "no-const-assign": 2,
+    // 警告console
+    "no-console":1,
+    // 最高三层循环
+    "max-depth":[2,3]
   }
 }
