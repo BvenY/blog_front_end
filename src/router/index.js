@@ -1,16 +1,16 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import welcome from '@/components/welcome'
+import Vue from 'vue';
+import Router from 'vue-router';
+import welcome from '@/components/welcome';
 
-Vue.use(Router)
+Vue.use(Router);
 
 export default new Router({
-  mode: 'history',
-  routes: [
-    {
-      path: '/',
-      name: 'welcome',
-      component: welcome
-    }
-  ]
-})
+    mode: 'history',
+    routes: [
+        {
+            path: '/',
+            name: 'welcome',
+            component: welcome
+        }
+    ]
+});

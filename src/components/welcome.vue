@@ -12,10 +12,10 @@
         <div class="hr">
         </div>
         <div class="button_box">
-          <Button type="default" ghost>首页</Button>
-          <Button type="default" ghost>关于我</Button>
-          <Button type="default" ghost>写博客</Button>
-          <Button type="default" ghost shape="circle" icon="logo-github"></Button>
+          <Button type="dashed" ghost shape="circle">首页</Button>
+          <Button type="dashed" ghost shape="circle">关于我</Button>
+          <Button type="dashed" ghost shape="circle">写博客</Button>
+          <Button type="dashed" ghost shape="circle" icon="logo-github"></Button>
         </div>
       </div>
     </div>
@@ -24,13 +24,13 @@
 
 <script>
 export default {
-  name: 'welcome',
-  data () {
-    return {
+    name: 'welcome',
+    data () {
+        return {
 
+        };
     }
-  }
-}
+};
 </script>
 
 <style scoped  lang="less">
