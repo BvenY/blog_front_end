@@ -2,7 +2,21 @@
     <div class="homeContainer">
         <div class="nav">
             <div class="black">
-
+                <div class="img"></div>
+                <div class="name">
+                    BvenY
+                </div>
+                <div class="description">
+                    Welcome to my blog
+                </div>
+                <div class="hr">
+                </div>
+                <div class="button_box">
+                    <Button type="dashed" ghost shape="circle" @click="mainIndex">首页</Button>
+                    <Button type="dashed" ghost shape="circle">关于我</Button>
+                    <Button type="dashed" ghost shape="circle">写博客</Button>
+                    <Button type="dashed" ghost shape="circle" icon="logo-github"></Button>
+                </div>
             </div>
         </div>
         <div class="aside"></div>
@@ -33,7 +47,7 @@ export default {
         @media (max-width:425px){
             flex-direction: column;
         }
-        @media (max-width:768px) and (min-width: 425px){
+        @media (max-width:1024px) and (min-width: 425px){
             flex-direction: column;
         }
     }
@@ -43,6 +57,110 @@ export default {
             width: 100%;
             height: 100%;
             background-color: rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            .img{
+                @media screen{
+                    margin-top: 55%;
+                    width: 80px;
+                    height: 80px;
+                    background-image:url(../../assets/img/user.jpg);
+                    background-size:100% 100%;
+                    border-radius: 45%;
+                @media (max-width:425px){
+                    width: 40px;
+                    height: 40px;
+                    margin-top: 5px;
+                }
+                @media (max-width:1024px) and (min-width: 425px){
+                    width: 50px;
+                    height: 50px;
+                    margin-top: 10px;
+                }
+                }
+            }
+            .name{
+                @media screen{
+                    width: 70%;
+                    height: 10%;
+                    font-size: 4em;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    color: #F1F3F4;
+                    border-bottom: 0.5px solid #3F3F41;
+                @media (max-width:425px){
+                    width: 40%;
+                    height: 20%;
+                    font-size: 1em;
+                }
+                @media (max-width:1024px) and (min-width: 425px){
+                    width: 40%;
+                    height: 20%;
+                    font-size: 2em;
+                }
+                }
+            }
+            .description{
+                @media screen{
+                    margin-top: 5%;
+                    width: 100%;
+                    height: 5%;
+                    font-size: 1.3em;
+                    color: #F1F3F4;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                @media (max-width:425px){
+                    margin-top: 1%;
+                    width: 100%;
+                    height: 10%;
+                    font-size: 0.8em;
+                }
+                @media (max-width:1024px) and (min-width: 425px){
+                    margin-top: 1%;
+                    width: 100%;
+                    height: 10%;
+                    font-size: 0.8em;
+                }
+                }
+            }
+            .hr{
+                @media screen{
+                    margin-top: 3%;
+                    height: 1px;
+                    width: 50%;
+                    border-bottom: 0.5px solid #3F3F41;
+                @media (max-width:425px){
+                    margin-top: 0.5%;
+                    width: 30%;
+                }
+                @media (max-width:1024px) and (min-width: 425px){
+                    margin-top: 0.5%;
+                    width: 30%;
+                }
+                }
+            }
+            .button_box{
+                @media screen{
+                    margin-top: 3%;
+                    width: 100%;
+                    height: 10%;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                @media (max-width:425px){
+                    margin-top: 12px;
+                }
+                @media (max-width:1024px) and (min-width: 425px){
+                    margin-top: 10px;
+                }
+                }
+                .ivu-btn{
+                margin-left: 15px;
+                }
+            }
         }
         @media screen{
             width: 20%;
@@ -53,7 +171,7 @@ export default {
             width: 100%;
             height: 20%;
         }
-        @media (max-width:768px) and (min-width: 425px){
+        @media (max-width:1024px) and (min-width: 425px){
             width: 100%;
             height: 25%;
         }
@@ -68,7 +186,7 @@ export default {
             height: 5%;
             overflow-x: scroll;
         }
-        @media (max-width:768px) and (min-width: 425px){
+        @media (max-width:1024px) and (min-width: 425px){
             width: 100%;
             height: 8%;
             overflow-x: scroll;
@@ -94,7 +212,7 @@ export default {
             width: 100%;
             height: 75%;
         }
-        @media (max-width:768px) and (min-width: 425px){
+        @media (max-width:1024px) and (min-width: 425px){
             width: 100%;
             height: 67%;
         }
