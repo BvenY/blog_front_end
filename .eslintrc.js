@@ -48,6 +48,7 @@ module.exports = {
     // 警告console
     "no-console":1,
     // 最高三层循环
-    "max-depth":[2,3]
+    "max-depth":[2,3],
+    "vue/no-parsing-error": [2, { "x-invalid-end-tag": false }]
   }
 }

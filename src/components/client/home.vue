@@ -12,24 +12,35 @@
                 <div class="hr">
                 </div>
                 <div class="button_box">
-                    <Button type="dashed" ghost shape="circle" @click="mainIndex">首页</Button>
+                    <Button type="dashed" ghost shape="circle">首页</Button>
                     <Button type="dashed" ghost shape="circle">关于我</Button>
                     <Button type="dashed" ghost shape="circle">写博客</Button>
                     <Button type="dashed" ghost shape="circle" icon="logo-github"></Button>
                 </div>
             </div>
         </div>
-        <div class="aside"></div>
+        <div class="aside">
+            <blog-aside></blog-aside>
+        </div>
         <div class="main">
             <div class="routerView"></div>
-            <div class="footer"></div>
+            <div class="footer">
+                <blog-footer></blog-footer>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
+import blogFooter from './footer';
+import blogAside from './aside';
+
 export default {
     name: 'home',
+    components: {
+        blogFooter,
+        blogAside
+    },
     data () {
         return {
 
@@ -180,7 +191,6 @@ export default {
     .aside{
         @media screen{
             width: 8%;
-            background-color: rosybrown;
         @media (max-width:425px){
             width: 100%;
             height: 5%;
@@ -197,16 +207,13 @@ export default {
         @media screen{
             width: 72%;
             height: 100%;
-            background-color: salmon;
             .routerView{
                 width: 100%;
                 height: 95%;
-                background-color: aqua;
             }
             .footer{
                 width: 100%;
                 height: 5%;
-                background-color: chartreuse;
             }
         @media (max-width:425px){
             width: 100%;
