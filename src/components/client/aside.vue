@@ -2,7 +2,11 @@
     <div class="asideContainer">
             <!-- PC端菜单栏 -->
             <div class="pc">
-                <Menu :theme="theme" active-name="1">
+                <Menu :theme="theme" active-name="0">
+                        <MenuItem name="0">
+                            <Icon type="md-document" />
+                            最近发表
+                        </MenuItem>
                     <MenuGroup title="博客分类">
                         <MenuItem v-for="item in menus" :name="item.name" :key='item.name'>
                             <Icon :type="item.icon" />
@@ -13,7 +17,11 @@
             </div>
             <!-- 移动端菜单栏 -->
             <div class="mobiel">
-                <Menu :theme="theme" active-name="1" mode="horizontal">
+                <Menu :theme="theme" active-name="0" mode="horizontal">
+                        <MenuItem name="0">
+                            <Icon type="md-document" />
+                            最近发表
+                        </MenuItem>
                         <MenuItem v-for="item in menus" :name="item.name" :key='item.name'>
                             <Icon :type="item.icon" />
                             {{item.msg}}
@@ -124,13 +132,12 @@ export default {
             min-width: 150px !important;
             @media (max-width:1024px) and (min-width: 425px){
                 font-size: 12px !important;
-                line-height: 90px !important;
             }
-            @media (max-width:425px) and (min-width: 320px) {
+            @media (max-width:425px) and (min-width: 375px) {
+                line-height: 35px !important;
+            }
+            @media (max-width: 375px) {
                 line-height: 32px !important;
-            }
-            @media (max-width: 320px) {
-                line-height: 25px !important;
             }
     }
         }

@@ -23,7 +23,9 @@
             <blog-aside></blog-aside>
         </div>
         <div class="main">
-            <div class="routerView"></div>
+            <div class="routerView">
+                <router-view></router-view>
+            </div>
             <div class="footer">
                 <blog-footer></blog-footer>
             </div>
@@ -57,6 +59,8 @@ export default {
             display: flex;
         @media (max-width:425px){
             flex-direction: column;
+            min-width: 300px;
+            min-height: 620px;
         }
         @media (max-width:1024px) and (min-width: 425px){
             flex-direction: column;
