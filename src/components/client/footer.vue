@@ -1,6 +1,6 @@
 <template>
     <div class="footerContainer">
-        <div class="footerMsg">© 2019</div>
+        <div class="footerMsg">Copyright © 2019</div>
         <div class="footerMsg">BvenY-Xhu-WeiLy</div>
         <div class="footerMsg">蜀ICP备19027184号</div>
     </div>

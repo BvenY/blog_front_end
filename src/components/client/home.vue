@@ -12,7 +12,7 @@
                 <div class="hr">
                 </div>
                 <div class="button_box">
-                    <Button type="dashed" ghost shape="circle">首页</Button>
+                    <Button type="dashed" ghost shape="circle" to="/">欢迎页</Button>
                     <Button type="dashed" ghost shape="circle">关于我</Button>
                     <Button type="dashed" ghost shape="circle">写博客</Button>
                     <Button type="dashed" ghost shape="circle" icon="logo-github"></Button>
