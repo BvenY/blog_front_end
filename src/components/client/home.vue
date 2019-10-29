@@ -207,7 +207,7 @@ export default {
         }
         @media (max-width:1024px) and (min-width: 425px){
             width: 100%;
-            height: 8%;
+            height: 6%;
             overflow-x: scroll;
         }
         }

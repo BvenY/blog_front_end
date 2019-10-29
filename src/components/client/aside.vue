@@ -17,7 +17,7 @@
             </div>
             <!-- 移动端菜单栏 -->
             <div class="mobiel">
-                <Menu :theme="theme" active-name="0" mode="horizontal">
+                <Menu :theme="theme" active-name="0" mode="horizontal" @on-select="startType">
                         <MenuItem name="0" to="/home/index">
                             <Icon type="md-document" />
                             最近发表
@@ -132,19 +132,11 @@ export default {
             overflow-x: scroll;
         }
         .ivu-menu-item{
-            @media screen{
             font-size: 12px !important;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             min-width: 150px !important;
-            @media (max-width:1024px) and (min-width: 425px){
-                font-size: 12px !important;
-            }
-            @media (max-width:425px) and (min-width: 375px) {
-                line-height: 35px !important;
-            }
-            @media (max-width: 375px) {
-                line-height: 32px !important;
-            }
-    }
         }
     }
 </style>
