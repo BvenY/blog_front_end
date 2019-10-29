@@ -13,9 +13,9 @@
         </div>
         <div class="button_box">
           <Button type="dashed" ghost shape="circle" to="/home/index">首页</Button>
-          <Button type="dashed" ghost shape="circle">关于我</Button>
+          <Button type="dashed" ghost shape="circle" to="/home/aboutMe">关于我</Button>
           <Button type="dashed" ghost shape="circle">写博客</Button>
-          <Button type="dashed" ghost shape="circle" icon="logo-github"></Button>
+          <Button type="dashed" ghost shape="circle" icon="logo-github" @click="github"></Button>
         </div>
       </div>
     </div>
@@ -31,7 +31,9 @@ export default {
         };
     },
     methods: {
-
+        github () {
+            window.location.href = 'https://github.com/BvenY';
+        }
     }
 };
 </script>

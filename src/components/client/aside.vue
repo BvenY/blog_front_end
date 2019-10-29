@@ -2,13 +2,13 @@
     <div class="asideContainer">
             <!-- PC端菜单栏 -->
             <div class="pc">
-                <Menu :theme="theme" active-name="0">
-                        <MenuItem name="0">
+                <Menu :theme="theme" active-name="0" width="100%" @on-select="startType">
+                        <MenuItem name="0" to="/home/index">
                             <Icon type="md-document" />
                             最近发表
                         </MenuItem>
                     <MenuGroup title="博客分类">
-                        <MenuItem v-for="item in menus" :name="item.name" :key='item.name'>
+                        <MenuItem  v-for="item in menus" :key='item.id' :name="item.id" >
                             <Icon :type="item.icon" />
                             {{item.msg}}
                         </MenuItem>
@@ -18,11 +18,11 @@
             <!-- 移动端菜单栏 -->
             <div class="mobiel">
                 <Menu :theme="theme" active-name="0" mode="horizontal">
-                        <MenuItem name="0">
+                        <MenuItem name="0" to="/home/index">
                             <Icon type="md-document" />
                             最近发表
                         </MenuItem>
-                        <MenuItem v-for="item in menus" :name="item.name" :key='item.name'>
+                        <MenuItem v-for="item in menus" :name="item.id" :key='item.id'>
                             <Icon :type="item.icon" />
                             {{item.msg}}
                         </MenuItem>
@@ -39,37 +39,42 @@ export default {
             theme: 'light',
             menus: [
                 {
-                    name: '1',
+                    id: '1',
                     msg: 'VUE专题',
                     icon: 'md-document'
                 },
                 {
-                    name: '2',
+                    id: '2',
                     msg: 'JavaScript专题',
                     icon: 'md-document'
                 },
                 {
-                    name: '3',
+                    id: '3',
                     msg: 'JavaScript专题',
                     icon: 'md-document'
                 },
                 {
-                    name: '4',
+                    id: '4',
                     msg: 'JavaScript专题',
                     icon: 'md-document'
                 },
                 {
-                    name: '5',
+                    id: '5',
                     msg: 'JavaScript专题',
                     icon: 'md-document'
                 },
                 {
-                    name: '6',
+                    id: '6',
                     msg: 'JavaScript专题',
                     icon: 'md-document'
                 }
             ]
         };
+    },
+    methods: {
+        startType (name) {
+            this.$router.push({name: 'typeBlog', params: {typeId: name}});
+        }
     }
 };
 </script>

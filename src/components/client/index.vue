@@ -1,6 +1,6 @@
 <template>
     <div class="indexContainer">
-        <div class="blogMsg" v-for="item in blog" :key='item.id'>
+        <div class="blogMsg" v-for="item in blog" :key='item.id' @click="startBlog(item)">
             <div class="blogTile">
                 {{item.title}}
             </div>
@@ -57,6 +57,12 @@ export default {
                 }
             ]
         };
+    },
+    methods: {
+        startBlog (item) {
+            let id = item.id;
+            this.$router.push({name: 'blog', params: {blogId: id}});
+        }
     }
 };
 </script>
@@ -68,7 +74,7 @@ export default {
         flex-direction: column;
         display: flex;
         align-items: center;
-        overflow-y: scroll;
+        // overflow-y: scroll;
         .blogMsg{
             margin-top: 2em;
             width: 90%;

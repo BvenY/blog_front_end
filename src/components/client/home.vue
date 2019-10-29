@@ -13,9 +13,9 @@
                 </div>
                 <div class="button_box">
                     <Button type="dashed" ghost shape="circle" to="/">欢迎页</Button>
-                    <Button type="dashed" ghost shape="circle">关于我</Button>
+                    <Button type="dashed" ghost shape="circle" to="/home/aboutMe">关于我</Button>
                     <Button type="dashed" ghost shape="circle">写博客</Button>
-                    <Button type="dashed" ghost shape="circle" icon="logo-github"></Button>
+                    <Button type="dashed" ghost shape="circle" icon="logo-github" @click="github"></Button>
                 </div>
             </div>
         </div>
@@ -47,6 +47,11 @@ export default {
         return {
 
         };
+    },
+    methods: {
+        github () {
+            window.location.href = 'https://github.com/BvenY';
+        }
     }
 };
 </script>
@@ -211,13 +216,14 @@ export default {
         @media screen{
             width: 72%;
             height: 100%;
+            overflow-y: scroll;
             .routerView{
                 width: 100%;
-                height: 95%;
+                min-height: calc(100% - 30px);
             }
             .footer{
                 width: 100%;
-                height: 5%;
+                height: 30px;
             }
         @media (max-width:425px){
             width: 100%;

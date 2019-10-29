@@ -23,7 +23,7 @@ const router = new Router({
                     title: '博客首页'
                 },
                 {
-                    path: 'blog',
+                    path: 'blog/:blogId',
                     component: resolve => require(['@/components/client/blog.vue'], resolve),
                     name: 'blog',
                     title: '博客'
@@ -35,7 +35,7 @@ const router = new Router({
                     title: '关于我'
                 },
                 {
-                    path: 'typeBlog',
+                    path: 'typeBlog/:typeId',
                     component: resolve => require(['@/components/client/typeBlog.vue'], resolve),
                     name: 'typeBlog',
                     title: '博客类型'
