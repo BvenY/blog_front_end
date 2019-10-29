@@ -19,12 +19,12 @@ export default {
 
 <style scoped  lang="less">
     .footerContainer{
+        margin-top: 20px;
         width: 100%;
         height: 100%;
         display: flex;
         align-items: center;
         justify-content: space-around;
-        background-color: #E8EAED;
     }
     .footerMsg{
         @media screen{
