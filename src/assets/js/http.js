@@ -4,7 +4,7 @@
 // 分别引入axios、router、消息提示、API根地址
 import axios from 'axios';
 import router from '../../router/index';
-import { Message } from 'iview';
+import { Message } from 'view-design';
 import api from '../javascript/api';
 
 /**

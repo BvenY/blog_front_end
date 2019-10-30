@@ -4,8 +4,8 @@
 import Vue from 'vue';
 import App from './App';
 import router from './router';// 使用iview
-import iView from 'iview';
-import 'iview/dist/styles/iview.css';//  使用CSS
+import iView from 'view-design';
+import 'view-design/dist/styles/iview.css';//  使用CSS
 //  markdown编辑器
 import mavonEditor from 'mavon-editor';
 import 'mavon-editor/dist/css/index.css';

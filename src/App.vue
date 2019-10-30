@@ -48,4 +48,18 @@ export default {
         }
     }
     }
+    ::selection {
+    color:#fff;
+    background-color: #FAE3DF ;
+    }
+
+    ::-moz-selection {
+        color:#fff;
+        background-color: #FAE3DF ;
+    }
+
+    ::-webkit-selection {
+        color:#fff;
+        background-color: #FAE3DF ;
+    }
 </style>
