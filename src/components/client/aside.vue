@@ -7,6 +7,10 @@
                             <Icon type="md-document" />
                             最近发表
                         </MenuItem>
+                        <MenuItem name="friendLink" to="/home/friendLink">
+                            <Icon type="md-document" />
+                            友链
+                        </MenuItem>
                     <MenuGroup title="博客分类">
                         <MenuItem  v-for="item in menus" :key='item.id' :name="item.id" >
                             <Icon :type="item.icon" />

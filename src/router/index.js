@@ -39,6 +39,12 @@ const router = new Router({
                     component: resolve => require(['@/components/client/typeBlog.vue'], resolve),
                     name: 'typeBlog',
                     title: '博客类型'
+                },
+                {
+                    path: 'friendLink',
+                    component: resolve => require(['@/components/client/friendLink.vue'], resolve),
+                    name: 'friendLink',
+                    title: '友情链接'
                 }
             ]
         },

@@ -252,6 +252,7 @@ export default {
                     display: flex;
                     flex-direction: column;
                     align-items: center;
+                    border-bottom:1px solid #BBBCBD;
                     .msg{
                     width: 95%;
                     height: 70%;
