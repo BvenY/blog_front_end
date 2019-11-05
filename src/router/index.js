@@ -56,55 +56,55 @@ const router = new Router({
                 {
                     path: 'index',
                     component: resolve => require(['@/components/manage/index.vue'], resolve),
-                    name: 'index',
+                    name: 'mindex',
                     title: '管理系统首页'
                 },
                 {
                     path: 'blog',
                     component: resolve => require(['@/components/manage/blog.vue'], resolve),
-                    name: 'blog',
+                    name: 'mblog',
                     title: '博客管理'
                 },
                 {
                     path: 'aboutMe',
                     component: resolve => require(['@/components/manage/aboutMe.vue'], resolve),
-                    name: 'aboutMe',
+                    name: 'maboutMe',
                     title: '关于我'
                 },
                 {
                     path: 'blogType',
                     component: resolve => require(['@/components/manage/blogType.vue'], resolve),
-                    name: 'blogType',
+                    name: 'mblogType',
                     title: '博客类型管理'
                 },
                 {
                     path: 'comment',
                     component: resolve => require(['@/components/manage/comment.vue'], resolve),
-                    name: 'comment',
+                    name: 'mcomment',
                     title: '评论管理'
                 },
                 {
                     path: 'user',
                     component: resolve => require(['@/components/manage/user.vue'], resolve),
-                    name: 'user',
+                    name: 'muser',
                     title: '用户管理'
                 },
                 {
                     path: 'friendLink',
                     component: resolve => require(['@/components/manage/friendLink.vue'], resolve),
-                    name: 'friendLink',
+                    name: 'mfriendLink',
                     title: '友链管理'
                 },
                 {
                     path: 'newBlog',
                     component: resolve => require(['@/components/manage/newBlog.vue'], resolve),
-                    name: 'newBlog',
+                    name: 'mnewBlog',
                     title: '新增博客'
                 },
                 {
                     path: 'changeBlog',
                     component: resolve => require(['@/components/manage/changeBlog.vue'], resolve),
-                    name: 'newBlog',
+                    name: 'mchangeBlog',
                     title: '修改博客'
                 }
             ]
