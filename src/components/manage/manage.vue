@@ -37,7 +37,7 @@
             <Layout>
                 <Header :style="{background: '#fff', boxShadow: '0 2px 3px 2px rgba(0,0,0,.1)'}">
                     <div class="name">
-                        <img alt="myself logo" src="../../assets/img/logo.png">菜鸡前端的私人博客后台管理系统
+                        <img alt="myself logo" src="../../assets/img/logo.png">20岁菜鸡前端想进腾讯
                     </div>
                     <div class="user">
                         <Dropdown trigger="click">
