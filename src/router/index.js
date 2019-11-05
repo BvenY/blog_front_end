@@ -100,6 +100,12 @@ const router = new Router({
                     component: resolve => require(['@/components/manage/newBlog.vue'], resolve),
                     name: 'newBlog',
                     title: '新增博客'
+                },
+                {
+                    path: 'changeBlog',
+                    component: resolve => require(['@/components/manage/changeBlog.vue'], resolve),
+                    name: 'newBlog',
+                    title: '修改博客'
                 }
             ]
         }
