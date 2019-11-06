@@ -1,7 +1,9 @@
 <template>
     <div class="friendLink" ref="data">
+        <change-link></change-link>
         <div class="title">
-            <Input search enter-button placeholder="请输入要查找的友链ID" v-model="findeNumber" @on-search="findUser"/>
+            <Input search enter-button placeholder="请输入要查找的友链ID" v-model="findNumber" @on-search="findUser"/>
+            <Button type="primary" size="large" @click="addLink">添加友链</Button>
         </div>
         <Table border :columns="columns1" :data="data1" :height="tableHeight">
             <template slot-scope="{ row, index }" slot="action">
@@ -16,8 +18,14 @@
 </template>
 
 <script>
+import bus from './bus';
+import changeLink from './changeLink';
+
 export default {
     name: 'friendLink',
+    components: {
+        changeLink
+    },
     data () {
         return {
             findNumber: '',
@@ -39,11 +47,6 @@ export default {
                     title: '友链名字',
                     align: 'center',
                     key: 'name'
-                },
-                {
-                    title: '创建时间',
-                    align: 'center',
-                    key: 'time'
                 },
                 {
                     title: 'Url',
@@ -87,8 +90,11 @@ export default {
         findUser () {
 
         },
+        addLink () {
+            bus.$emit('addLink');
+        },
         change (index) {
-
+            bus.$emit('changeLink', index);
         },
         remove (index) {
 
@@ -134,6 +140,7 @@ export default {
             width: 100%;
             height: 50px;
             display: flex;
+            justify-content: space-between;
             align-items: center;
             background-color: #F5F7F9;
             .ivu-input-wrapper{

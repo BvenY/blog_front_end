@@ -1,7 +1,9 @@
 <template>
     <div class="userContainer" ref="data">
+        <change-user></change-user>
         <div class="title">
-            <Input search enter-button placeholder="请输入要查找的用户ID" v-model="findeNumber" @on-search="findUser"/>
+            <Input search enter-button placeholder="请输入要查找的用户ID" v-model="findNumber" @on-search="findUser"/>
+            <Button type="primary" size="large" @click="addUser">添加用户</Button>
         </div>
         <Table border :columns="columns1" :data="data1" :height="tableHeight">
             <template slot-scope="{ row, index }" slot="action">
@@ -16,8 +18,14 @@
 </template>
 
 <script>
+import bus from './bus';
+import changeUser from './changeUser';
+
 export default {
     name: 'userContainer',
+    components: {
+        changeUser
+    },
     data () {
         return {
             findNumber: '',
@@ -98,7 +106,10 @@ export default {
 
         },
         change (index) {
-
+            bus.$emit('changeUser', index);
+        },
+        addUser () {
+            bus.$emit('addUser');
         },
         remove (index) {
 
@@ -144,6 +155,7 @@ export default {
             width: 100%;
             height: 50px;
             display: flex;
+            justify-content: space-between;
             align-items: center;
             background-color: #F5F7F9;
             .ivu-input-wrapper{

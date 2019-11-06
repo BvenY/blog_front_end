@@ -1,7 +1,8 @@
 <template>
     <div class="comment" ref="data">
+        <blog-reply></blog-reply>
         <div class="title">
-            <Input search enter-button placeholder="请输入要查找的评论ID" v-model="findeNumber" @on-search="findUser"/>
+            <Input search enter-button placeholder="请输入要查找的评论ID" v-model="findNumber" @on-search="findUser"/>
         </div>
         <Table border :columns="columns1" :data="data1" :height="tableHeight">
             <template slot-scope="{ row, index }" slot="action">
@@ -16,8 +17,14 @@
 </template>
 
 <script>
+import bus from './bus';
+import blogReply from './reply';
+
 export default {
     name: 'comment',
+    components: {
+        blogReply
+    },
     data () {
         return {
             findNumber: '',
@@ -98,7 +105,7 @@ export default {
 
         },
         reply (index) {
-
+            bus.$emit('reply', index);
         },
         remove (index) {
 

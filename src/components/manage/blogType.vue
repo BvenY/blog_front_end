@@ -1,8 +1,9 @@
 <template>
     <div class="blogType" ref="data">
+        <change-type></change-type>
         <div class="title">
-            <Input search enter-button placeholder="请输入要查找的博客类型ID" v-model="findeNumber" @on-search="findUser"/>
-            <Button type="primary" size="large">添加博客类型</Button>
+            <Input search enter-button placeholder="请输入要查找的博客类型ID" v-model="findNumber" @on-search="findUser"/>
+            <Button type="primary" size="large" @click="addType">添加博客类型</Button>
         </div>
         <Table border :columns="columns1" :data="data1" :height="tableHeight">
             <template slot-scope="{ row, index }" slot="action">
@@ -17,8 +18,14 @@
 </template>
 
 <script>
+import bus from './bus';
+import changeType from './changeType';
+
 export default {
     name: 'blogType',
+    components: {
+        changeType
+    },
     data () {
         return {
             findNumber: '',
@@ -83,7 +90,7 @@ export default {
 
         },
         change (index) {
-
+            bus.$emit('changeType', index);
         },
         remove (index) {
 
@@ -93,6 +100,9 @@ export default {
         },
         pageSize (num) {
             console.log(num);
+        },
+        addType () {
+            bus.$emit('addType');
         },
         /* 获取高度 */
         getHeight () {

@@ -2,7 +2,11 @@
     <div class="manageContainer">
         <Layout :style="{minHeight: '100vh'}">
             <Sider collapsible :collapsed-width="78" v-model="isCollapsed">
-                <Menu active-name="1-1" theme="dark" width="auto" :class="menuitemClasses">
+                <Menu active-name="index" theme="dark" width="auto" :class="menuitemClasses">
+                    <MenuItem name="rrturn" to="/home/index">
+                        <Icon type="ios-navigate"></Icon>
+                        <span>返回</span>
+                    </MenuItem>
                     <MenuItem name="index" to="/manage/index">
                         <Icon type="ios-navigate"></Icon>
                         <span>首页</span>
@@ -73,7 +77,7 @@ export default {
     },
     methods: {
         exit () {
-            this.$router.push({path: '/home/index'});
+            this.$router.push({path: '/'});
         }
     },
     computed: {

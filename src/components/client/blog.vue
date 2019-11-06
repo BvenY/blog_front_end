@@ -215,7 +215,7 @@ export default {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                background-color: #FAE3DF;
+                box-shadow: 0 2px 3px 2px rgba(0,0,0,.1);
                 border-radius: 5px;
                 .commentName{
                     width: 98%;
