@@ -39,6 +39,7 @@ export default {
                 {
                     title: '类型名',
                     align: 'center',
+                    width: 400,
                     key: 'name'
                 },
                 {

@@ -41,10 +41,10 @@
                     </div>
                     <div class="user">
                         <Dropdown trigger="click">
-                            <Button type="primary" size="large">
+                            <a href="javascript:void(0)" style="color:#046B84">
                                 BvenY
                                 <Icon type="ios-arrow-down"></Icon>
-                            </Button>
+                            </a>
                             <DropdownMenu slot="list">
                                 <DropdownItem @click.native="exit">退出登录</DropdownItem>
                             </DropdownMenu>
@@ -158,7 +158,6 @@ export default {
             width: 100% !important;
             height: 100% !important;
             padding: 0 !important;
-            overflow-y: scroll;
         }
     }
 </style>
