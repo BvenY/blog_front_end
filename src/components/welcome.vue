@@ -15,7 +15,7 @@
         <div class="button_box">
           <Button type="dashed" ghost shape="circle" to="/home/index">首页</Button>
           <Button type="dashed" ghost shape="circle" to="/home/aboutMe">关于我</Button>
-          <Button type="dashed" ghost shape="circle" to="/manage/index">写博客</Button>
+          <Button type="dashed" ghost shape="circle" to="/manage/index" class="write">写博客</Button>
           <Button type="dashed" ghost shape="circle" icon="logo-github" @click="github"></Button>
         </div>
       </div>
@@ -69,9 +69,15 @@ export default {
       align-items: center;
       @media (max-width:425px){
         width: 100%;
+        .write{
+                display: none;
+            }
       }
       @media (max-width:768px) and (min-width: 425px){
         width: 70%;
+        .write{
+                display: none;
+            }
       }
     }
   }
