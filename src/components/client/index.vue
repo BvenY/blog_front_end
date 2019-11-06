@@ -1,14 +1,14 @@
 <template>
     <div class="indexContainer">
-        <div class="blogMsg" v-for="item in blog" :key='item.id' @click="startBlog(item)">
+        <div class="blogMsg" v-for="item in blog" :key='item.blogID' @click="startBlog(item)">
             <div class="blogTile">
-                {{item.title}}
+                {{item.blogName}}
             </div>
             <div class="blogTime">
-                {{item.user}} || {{item.time}}
+                {{item.userName}} || {{item.blogTime}}
             </div>
             <div class="blogDescription">
-                {{item.description}}
+                {{item.blogDescription}}
             </div>
         </div>
     </div>
@@ -19,50 +19,28 @@ export default {
     name: 'index',
     data () {
         return {
-            blog: [
-                {
-                    title: 'Hello World',
-                    time: '2019-10-28 16:30:28',
-                    user: 'BvenY',
-                    description: '这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试',
-                    id: '1'
-                },
-                {
-                    title: 'Hello World1',
-                    time: '2019-10-28 16:30:28',
-                    user: 'BvenY',
-                    description: '这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试',
-                    id: '11'
-                },
-                {
-                    title: 'Hello World2',
-                    time: '2019-10-28 16:30:28',
-                    user: 'BvenY',
-                    description: '这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试',
-                    id: '111'
-                },
-                {
-                    title: 'Hello World3',
-                    time: '2019-10-28 16:30:28',
-                    user: 'BvenY',
-                    description: '这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试',
-                    id: '1111'
-                },
-                {
-                    title: 'Hello World13',
-                    time: '2019-10-28 16:30:28',
-                    user: 'BvenY',
-                    description: '这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试',
-                    id: '11111'
-                }
-            ]
+            blog: []
         };
     },
     methods: {
         startBlog (item) {
-            let id = item.id;
+            let id = item.blogID;
             this.$router.push({name: 'blog', params: {blogId: id}});
         }
+    },
+    created () {
+        this.$http.get('/getNew')
+            .then((res) => {
+                for (let i = 0; i < res.length; i++) {
+                    let date = new Date(res[i].blogTime).toJSON();
+                    let dates = new Date(+new Date(date) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '');
+                    res[i].blogTime = dates;
+                }
+                this.blog = res;
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     }
 };
 </script>
