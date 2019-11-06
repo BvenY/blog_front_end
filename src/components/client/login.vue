@@ -136,6 +136,10 @@ export default {
             this.visible = false;
             this.visible = true;
         });
+        bus.$on('unLogin', () => {
+            this.visible = false;
+            this.visible = true;
+        });
     }
 
 };

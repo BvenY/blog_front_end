@@ -4,17 +4,17 @@
             <div class="pc">
                 <Menu :theme="theme" active-name="0" width="100%" @on-select="startType">
                         <MenuItem name="0" to="/home/index">
-                            <Icon type="md-document" />
+                            <Icon type="md-clock" />
                             最近发表
                         </MenuItem>
                         <MenuItem name="friendLink" to="/home/friendLink">
-                            <Icon type="md-document" />
+                            <Icon type="md-link" />
                             友链
                         </MenuItem>
                     <MenuGroup title="博客分类">
-                        <MenuItem  v-for="item in menus" :key='item.id' :name="item.id" >
+                        <MenuItem  v-for="item in menus" :key='item.typeID' :name="item.typeID" >
                             <Icon :type="item.icon" />
-                            {{item.msg}}
+                            {{item.blogType}}
                         </MenuItem>
                     </MenuGroup>
                 </Menu>
@@ -26,9 +26,9 @@
                             <Icon type="md-document" />
                             最近发表
                         </MenuItem>
-                        <MenuItem v-for="item in menus" :name="item.id" :key='item.id'>
+                        <MenuItem  v-for="item in menus" :key='item.typeID' :name="item.typeID" >
                             <Icon :type="item.icon" />
-                            {{item.msg}}
+                            {{item.blogType}}
                         </MenuItem>
                 </Menu>
             </div>
@@ -41,44 +41,25 @@ export default {
     data () {
         return {
             theme: 'light',
-            menus: [
-                {
-                    id: '1',
-                    msg: 'VUE专题',
-                    icon: 'md-document'
-                },
-                {
-                    id: '2',
-                    msg: 'JavaScript专题',
-                    icon: 'md-document'
-                },
-                {
-                    id: '3',
-                    msg: 'JavaScript专题',
-                    icon: 'md-document'
-                },
-                {
-                    id: '4',
-                    msg: 'JavaScript专题',
-                    icon: 'md-document'
-                },
-                {
-                    id: '5',
-                    msg: 'JavaScript专题',
-                    icon: 'md-document'
-                },
-                {
-                    id: '6',
-                    msg: 'JavaScript专题',
-                    icon: 'md-document'
-                }
-            ]
+            menus: []
         };
     },
     methods: {
         startType (name) {
             this.$router.push({name: 'typeBlog', params: {typeId: name}});
         }
+    },
+    created () {
+        this.$http.get('/getType')
+            .then((res) => {
+                for (let i = 0; i < res.length; i++) {
+                    res[i]['icon'] = 'ios-bookmarks';
+                }
+                this.menus = res;
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     }
 };
 </script>

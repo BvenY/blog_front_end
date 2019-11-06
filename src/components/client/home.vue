@@ -1,5 +1,6 @@
 <template>
     <div class="homeContainer">
+        <blog-login></blog-login>
         <div class="nav">
             <div class="black">
                 <div class="img"></div>
@@ -36,12 +37,14 @@
 <script>
 import blogFooter from './footer';
 import blogAside from './aside';
+import blogLogin from './login';
 
 export default {
     name: 'home',
     components: {
         blogFooter,
-        blogAside
+        blogAside,
+        blogLogin
     },
     data () {
         return {

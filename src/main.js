@@ -11,8 +11,10 @@ import mavonEditor from 'mavon-editor';
 import 'mavon-editor/dist/css/index.css';
 // 引入vuex进行公共状态管理
 import store from './vuex/store';
+import http from './assets/js/http';
 
 Vue.config.productionTip = false;
+Vue.prototype.$http = http;
 
 Vue.use(iView);
 Vue.use(mavonEditor);

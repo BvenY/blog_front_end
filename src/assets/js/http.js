@@ -5,7 +5,7 @@
 import axios from 'axios';
 import router from '../../router/index';
 import { Message } from 'view-design';
-import api from '../javascript/api';
+import api from '../js/api';
 
 /**
  *配置HTTP拦截器，统一处理所有的HTTP请求和响应
@@ -14,9 +14,7 @@ const http = axios.create({
     /* 超时时间 */
     timeout: 180000,
     /* api地址 */
-    baseURL: api,
-    /* 请求携带cookie */
-    withCredentials: true
+    baseURL: api
 });
 
 /**

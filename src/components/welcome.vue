@@ -1,5 +1,6 @@
 <template>
   <div class="welcome">
+    <blog-login></blog-login>
     <div class="main">
       <div class="window">
         <div class="img"></div>
@@ -14,7 +15,7 @@
         <div class="button_box">
           <Button type="dashed" ghost shape="circle" to="/home/index">首页</Button>
           <Button type="dashed" ghost shape="circle" to="/home/aboutMe">关于我</Button>
-          <Button type="dashed" ghost shape="circle">写博客</Button>
+          <Button type="dashed" ghost shape="circle" to="/manage/index">写博客</Button>
           <Button type="dashed" ghost shape="circle" icon="logo-github" @click="github"></Button>
         </div>
       </div>
@@ -23,8 +24,13 @@
 </template>
 
 <script>
+import blogLogin from './client/login';
+
 export default {
     name: 'welcome',
+    components: {
+        blogLogin
+    },
     data () {
         return {
 

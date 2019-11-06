@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
+import bus from '../components/client/bus';
 
 Vue.use(Router);
 
@@ -51,60 +52,90 @@ const router = new Router({
         {
             path: '/manage',
             name: 'manage',
+            meta: {
+                requireAuth: true
+            },
             component: resolve => require(['@/components/manage/manage.vue'], resolve),
             children: [
                 {
                     path: 'index',
                     component: resolve => require(['@/components/manage/index.vue'], resolve),
                     name: 'mindex',
+                    meta: {
+                        requireAuth: true
+                    },
                     title: '管理系统首页'
                 },
                 {
                     path: 'blog',
                     component: resolve => require(['@/components/manage/blog.vue'], resolve),
                     name: 'mblog',
+                    meta: {
+                        requireAuth: true
+                    },
                     title: '博客管理'
                 },
                 {
                     path: 'aboutMe',
                     component: resolve => require(['@/components/manage/aboutMe.vue'], resolve),
                     name: 'maboutMe',
+                    meta: {
+                        requireAuth: true
+                    },
                     title: '关于我'
                 },
                 {
                     path: 'blogType',
                     component: resolve => require(['@/components/manage/blogType.vue'], resolve),
                     name: 'mblogType',
+                    meta: {
+                        requireAuth: true
+                    },
                     title: '博客类型管理'
                 },
                 {
                     path: 'comment',
                     component: resolve => require(['@/components/manage/comment.vue'], resolve),
                     name: 'mcomment',
+                    meta: {
+                        requireAuth: true
+                    },
                     title: '评论管理'
                 },
                 {
                     path: 'user',
                     component: resolve => require(['@/components/manage/user.vue'], resolve),
                     name: 'muser',
+                    meta: {
+                        requireAuth: true
+                    },
                     title: '用户管理'
                 },
                 {
                     path: 'friendLink',
                     component: resolve => require(['@/components/manage/friendLink.vue'], resolve),
                     name: 'mfriendLink',
+                    meta: {
+                        requireAuth: true
+                    },
                     title: '友链管理'
                 },
                 {
                     path: 'newBlog',
                     component: resolve => require(['@/components/manage/newBlog.vue'], resolve),
                     name: 'mnewBlog',
+                    meta: {
+                        requireAuth: true
+                    },
                     title: '新增博客'
                 },
                 {
                     path: 'changeBlog',
                     component: resolve => require(['@/components/manage/changeBlog.vue'], resolve),
                     name: 'mchangeBlog',
+                    meta: {
+                        requireAuth: true
+                    },
                     title: '修改博客'
                 }
             ]
@@ -112,11 +143,12 @@ const router = new Router({
     ]
 });
 
-// router.beforeEach((to, from, next) => {
-//     if (to.path !== '/' && !localStorage.token) {
-//         return next('/');
-//     }
-//     next();
-// });
+router.beforeEach((to, from, next) => {
+    if (to.meta.requireAuth && !sessionStorage.token) {
+        bus.$emit('unLogin');
+        return from.path;
+    }
+    next();
+});
 
 export default router;
