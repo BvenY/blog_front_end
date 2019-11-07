@@ -1,5 +1,6 @@
 <template>
     <div class="index">
+        <Spin size="large" fix v-if="loading"></Spin>
         <div class="dataMain">
             <div class="user num">
                 <div class="title">注册用户总数</div>
@@ -22,6 +23,7 @@ export default {
     name: 'index',
     data () {
         return {
+            loading: true,
             userNum: 0,
             blogNum: 0,
             commentNum: 0
@@ -33,6 +35,7 @@ export default {
                 this.userNum = res.userNum;
                 this.blogNum = res.blogNum;
                 this.commentNum = res.commentNum;
+                this.loading = false;
             })
             .catch((err) => {
                 console.log(err);

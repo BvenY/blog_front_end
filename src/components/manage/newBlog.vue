@@ -1,10 +1,13 @@
 <template>
     <div class="newBlogContainer" ref="data">
+        <Modal :value.sync="visible" @on-cancel="cancel" @on-ok="ok" title="博客简介">
+            <Input v-model="blogDescription" maxlength="100" show-word-limit type="textarea" placeholder="Enter something..." style="width: 100%;resize: none;" />
+        </Modal>
         <div class="topButton">
             <div class="titleInput">
                 <Input v-model="blogName" size="large" placeholder="请输入博客名字" />
                 <Select v-model="blogType" size="large" placeholder="请选择博客类型">
-                    <Option v-for="item in types" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                    <Option v-for="item in types" :value="item.label" :key="item.value">{{ item.label }}</Option>
                 </Select>
             </div>
             <div class="titleSubmit">
@@ -12,36 +15,63 @@
             </div>
         </div>
         <div :style="{height:height + 'px'}">
-            <mavon-editor v-model="blogValue" @save="submit"  :navigation="true"/>
+            <mavon-editor v-model="blogValue" @save="save" @change="save" :navigation="true"/>
         </div>
     </div>
 </template>
 
 <script>
 export default {
-    name: 'nwe_blog',
+    name: 'new_blog',
     data () {
         return {
+            visible: false,
             blogValue: '',
+            blogDescription: '',
             key: '',
             blogName: '',
             blogType: '',
-            types: [
-                {
-                    value: '1',
-                    label: 'VUE专题'
-                },
-                {
-                    value: '2',
-                    label: 'Javascript专题'
-                }
-            ],
+            types: [],
             height: 0
         };
     },
     methods: {
+        cancel () {
+            this.visible = false;
+        },
+        ok () {
+            let postData = {};
+            postData['userID'] = sessionStorage.userID;
+            postData['blogType'] = this.blogType;
+            postData['blogName'] = this.blogName;
+            postData['blogMsg'] = this.blogValue;
+            postData['description'] = this.blogDescription;
+            postData = JSON.stringify(postData);
+            this.$http.post('api/addBlog',
+                postData,
+                {
+                    headers: {'Content-Type': 'application/json'}
+                }
+            )
+                .then((res) => {
+                    this.$Message.success({
+                        content: '发布成功',
+                        background: true,
+                        center: true,
+                        duration: 1.5
+                    });
+                    this.blogValue = '';
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+            sessionStorage.removeItem('blogMsg');
+        },
+        save () {
+            sessionStorage.setItem('blogMsg', this.blogValue);
+        },
         submit () {
-            console.log(this.blogValue);
+            this.visible = true;
         },
         /* 获取高度 */
         getHeight () {
@@ -65,7 +95,24 @@ export default {
         });
     },
     created () {
+        if (sessionStorage.blogMsg) {
+            this.blogValue = sessionStorage.blogMsg;
+        }
         this.getHeight();
+        this.$http.get('/getType')
+            .then((res) => {
+                let types = [];
+                for (let i = 0; i < res.length; i++) {
+                    let obj = {};
+                    obj['value'] = res[i].typeID;
+                    obj['label'] = res[i].blogType;
+                    types[i] = obj;
+                }
+                this.types = types;
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     }
 };
 </script>

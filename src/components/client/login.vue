@@ -151,6 +151,7 @@ export default {
                 .then((res) => {
                     sessionStorage.setItem('userType', res.userType);
                     sessionStorage.setItem('userName', res.userName);
+                    sessionStorage.setItem('userID', res.userID);
                     this.$Message.success({
                         content: '登录成功',
                         background: true,

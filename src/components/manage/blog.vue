@@ -1,15 +1,16 @@
 <template>
     <div class="blogContainer" ref="data">
         <div class="title">
-            <Input search enter-button placeholder="请输入要查找的博客ID" v-model="findeNumber" @on-search="findUser"/>
+            <Input search enter-button placeholder="请输入要查找的博客ID" v-model="findNumber" @on-search="findBlog"/>
+            <Button type="primary" size="large" @click="getTable(1, 10)" icon="md-arrow-round-back" shape="circle" style="margin-left:10px" title="取消查找"></Button>
         </div>
-        <Table border :columns="columns1" :data="data1" :height="tableHeight">
+        <Table border :columns="columns" :data="tableData" :height="tableHeight" :loading="loading">
             <template slot-scope="{ row, index }" slot="action">
-                <Button type="error" size="small" @click="remove(index)">删除</Button>
+                <Button type="error" size="small" @click="remove(row)">删除</Button>
             </template>
         </Table>
         <div class="page">
-            <Page :total="pageInfo.pageTotal" :current="pageInfo.currentPage" :page-size="pageInfo.pageSize" @on-change="pageChange" @on-page-size-change="pageSize" show-sizer show-total show-elevator/>
+            <Page :total="pageInfo.pageTotal"  @on-change="pageChange" @on-page-size-change="pageSize" show-sizer show-total show-elevator :page-size-opts="[5,10,20,30]"/>
         </div>
     </div>
 </template>
@@ -19,96 +20,88 @@ export default {
     name: 'blogContainer',
     data () {
         return {
+            loading: true,
             findNumber: '',
             /* 通过key刷新表格 */
             table: 1,
             tableHeight: 0,
             pageInfo: {
-                pageSize: 5,
+                pageSize: 10,
                 currentPage: 1,
-                pageTotal: 500
+                pageTotal: 0
             },
-            columns1: [
+            columns: [
                 {
                     title: '博客ID',
                     align: 'center',
-                    key: 'name'
+                    key: 'blogID'
                 },
                 {
                     title: '博客编写人',
                     align: 'center',
-                    key: 'name'
+                    key: 'userName'
                 },
                 {
                     title: '博客类型',
                     align: 'center',
-                    key: 'time'
+                    key: 'blogType'
                 },
                 {
                     title: '博客名',
                     align: 'center',
-                    key: 'time'
+                    key: 'blogName'
                 },
                 {
                     title: '博客描述',
                     align: 'center',
                     resizable: true,
                     width: 400,
-                    key: 'time'
+                    key: 'blogDescription'
                 },
                 {
                     title: '博客创建时间',
                     align: 'center',
-                    key: 'time'
+                    width: 200,
+                    key: 'blogTime'
                 },
                 {
-                    title: '博客评论数',
-                    align: 'center',
-                    key: 'time'
-                },
-                {
-                    title: 'Action',
+                    title: '操作',
                     slot: 'action',
                     width: 100,
                     align: 'center'
                 }
             ],
-            data1: [
-                {
-                    name: 'John Brown',
-                    time: '2016-10-03',
-                    url: 'www.baidu.com'
-                },
-                {
-                    name: 'John Brown',
-                    time: '2016-10-03',
-                    url: 'www.baidu.com'
-                },
-                {
-                    name: 'John Brown',
-                    time: '2016-10-03',
-                    url: 'www.baidu.com'
-                },
-                {
-                    name: 'John Brown',
-                    time: '2016-10-03',
-                    url: 'www.baidu.com'
-                }
-            ]
+            tableData: []
         };
     },
     methods: {
-        findUser () {
-
-        },
-        remove (index) {
-
+        remove (row) {
+            this.$http.delete('/api/deleteBlog',
+                {
+                    params: {
+                        blogID: row.blogID
+                    }
+                })
+                .then((res) => {
+                    this.$Message.success({
+                        content: '删除成功',
+                        background: true,
+                        center: true,
+                        duration: 1.5
+                    });
+                    this.getTable(this.pageInfo.currentPage, this.pageInfo.pageSize);
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
         },
         pageChange (num) {
-            console.log(num);
+            this.pageInfo.currentPage = num;
+            this.getTable(this.pageInfo.currentPage, this.pageInfo.pageSize);
         },
         pageSize (num) {
-            console.log(num);
+            this.pageInfo.pageSize = num;
+            this.getTable(this.pageInfo.currentPage, this.pageInfo.pageSize);
         },
         /* 获取高度 */
         getHeight () {
@@ -124,6 +117,51 @@ export default {
                 this.tableHeight = nowH;
                 this.table++;
             }
+        },
+        getTable (pageNum, pageSize) {
+            this.loading = true;
+            this.$http.get('api/getBlog',
+                {
+                    params: {
+                        pageNum: pageNum,
+                        pageSize: pageSize
+                    }
+                })
+                .then((res) => {
+                    for (let i = 0; i < res.data.length; i++) {
+                        let date = new Date(res.data[i].blogTime).toJSON();
+                        let dates = new Date(+new Date(date) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '');
+                        res.data[i].blogTime = dates;
+                    }
+                    this.tableData = res.data;
+                    this.pageInfo.pageTotal = res.totalCount;
+                    this.loading = false;
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        },
+        findBlog () {
+            this.loading = true;
+            this.$http.get('searchBlog',
+                {
+                    params: {
+                        blogID: this.findNumber
+                    }
+                })
+                .then((res) => {
+                    console.log(res);
+                    let date = new Date(res.blogTime).toJSON();
+                    let dates = new Date(+new Date(date) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '');
+                    res.blogTime = dates;
+                    this.tableData = [];
+                    this.tableData[0] = res;
+                    this.loading = false;
+                    this.findNumber = '';
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
         }
     },
     mounted () {
@@ -132,6 +170,7 @@ export default {
         });
     },
     created () {
+        this.getTable(1, 10);
         this.getHeight();
     }
 };

@@ -57,15 +57,15 @@ http.interceptors.response.use(
         }
         else if (data.code === '0203') {
             Message.error({
-                message: data.msg,
+                content: data.msg,
                 background: true,
                 center: true,
                 duration: 2
             });
             setTimeout(() => {
+                sessionStorage.removeItem('token');
                 router.replace({
-                    path: '/',
-                    query: { redirect: router.currentRoute.fullPath }// 登录成功后跳入浏览的当前页面
+                    path: '/home/index'
                 });
             }, 1500);
             return Promise.reject(data);
