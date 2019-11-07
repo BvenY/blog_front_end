@@ -46,7 +46,7 @@
                     <div class="user">
                         <Dropdown trigger="click">
                             <a href="javascript:void(0)" style="color:#046B84">
-                                BvenY
+                                {{username}}
                                 <Icon type="ios-arrow-down"></Icon>
                             </a>
                             <DropdownMenu slot="list">
@@ -72,12 +72,14 @@ export default {
     name: 'manage',
     data () {
         return {
-            isCollapsed: false
+            isCollapsed: false,
+            username: sessionStorage.userName
         };
     },
     methods: {
         exit () {
             this.$router.push({path: '/'});
+            sessionStorage.clear();
         }
     },
     computed: {

@@ -26,6 +26,9 @@ http.interceptors.request.use(
         /* Tip:1
         * 请求开始时结合vuex开启loading动画
         * */
+        if (sessionStorage.token) {
+            config.headers['x-access-token'] = sessionStorage.token;
+        }
         return config;
     },
     error => {
@@ -33,7 +36,7 @@ http.interceptors.request.use(
             content: '请求数据错误',
             background: true,
             center: true,
-            duration: 2000
+            duration: 2
         });
         return Promise.reject(error);
     }
@@ -45,17 +48,19 @@ http.interceptors.request.use(
 http.interceptors.response.use(
     response => {
         console.log(response);
+        if (response.headers['x-access-token']) {
+            sessionStorage.setItem('token', response.headers['x-access-token']);
+        }
         let data = response.data;
         if (data.code === '0000') {
             return data.data;
-        } else if (!data.code) {
-            return data;
-        } else if (data.code === '0203') {
+        }
+        else if (data.code === '0203') {
             Message.error({
                 message: data.msg,
                 background: true,
                 center: true,
-                duration: 2000
+                duration: 2
             });
             setTimeout(() => {
                 router.replace({
@@ -64,12 +69,13 @@ http.interceptors.response.use(
                 });
             }, 1500);
             return Promise.reject(data);
-        } else {
+        }
+        else {
             Message.error({
-                message: response.data.msg,
+                content: data.msg,
                 background: true,
                 center: true,
-                duration: 2000
+                duration: 1
             });
             return Promise.reject(response);
         }

@@ -1,6 +1,5 @@
 <template>
     <div class="blogContainer">
-        <blog-login></blog-login>
         <!-- 博客显示 -->
         <div class="blog">
             <div class="title">Hello World {{id}}</div>

@@ -25,6 +25,7 @@
 
 <script>
 import blogLogin from './client/login';
+import bus from './client/bus';
 
 export default {
     name: 'welcome',
@@ -40,6 +41,15 @@ export default {
         github () {
             window.location.href = 'https://github.com/BvenY';
         }
+    },
+    created () {
+        bus.$on('loginSuc', () => {
+            this.login = false;
+            this.login = true;
+            if (sessionStorage.userType === '1' || sessionStorage.userType === '520') {
+                this.$router.push({path: '/manage/index'});
+            }
+        });
     }
 };
 </script>

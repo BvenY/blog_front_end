@@ -1,6 +1,6 @@
 <template>
     <div class="homeContainer">
-        <blog-login></blog-login>
+        <blog-login v-if="login === true"></blog-login>
         <div class="nav">
             <div class="black">
                 <div class="img"></div>
@@ -38,6 +38,7 @@
 import blogFooter from './footer';
 import blogAside from './aside';
 import blogLogin from './login';
+import bus from './bus';
 
 export default {
     name: 'home',
@@ -48,13 +49,34 @@ export default {
     },
     data () {
         return {
-
+            login: true
         };
     },
     methods: {
         github () {
             window.location.href = 'https://github.com/BvenY';
         }
+    },
+    created () {
+        bus.$on('loginSuc', () => {
+            this.login = false;
+            this.login = true;
+            if (sessionStorage.userType === '1' || sessionStorage.userType === '520') {
+                this.$router.push({path: '/manage/index'});
+            }
+            else {
+                this.$Message.warning({
+                    content: '您没有该权限',
+                    background: true,
+                    center: true,
+                    duration: 2
+                });
+            }
+        });
+        bus.$on('newSuc', () => {
+            this.login = false;
+            this.login = true;
+        });
     }
 };
 </script>

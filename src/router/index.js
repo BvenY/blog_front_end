@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import bus from '../components/client/bus';
+import { Message } from 'view-design';
 
 Vue.use(Router);
 
@@ -144,11 +145,27 @@ const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
-    if (to.meta.requireAuth && !sessionStorage.token) {
-        bus.$emit('unLogin');
-        return from.path;
+    if (to.meta.requireAuth) {
+        if (!sessionStorage.token) {
+            bus.$emit('unLogin');
+            return from.path;
+        }
+        else if (sessionStorage.userType !== '1' && sessionStorage.userType !== '520') {
+            Message.warning({
+                content: '您没有相关权限',
+                background: true,
+                center: true,
+                duration: 2
+            });
+            return from.path;
+        }
+        else {
+            next();
+        }
     }
-    next();
+    else {
+        next();
+    }
 });
 
 export default router;

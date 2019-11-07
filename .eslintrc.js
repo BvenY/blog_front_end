@@ -49,6 +49,7 @@ module.exports = {
     "no-console":0,
     // 最高三层循环
     "max-depth":[2,3],
+    "brace-style": [2, "stroustrup"],
     "vue/no-parsing-error": [2, { "x-invalid-end-tag": false }]
   }
 }

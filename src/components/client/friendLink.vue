@@ -4,8 +4,8 @@
             友情链接
         </div>
         <div class="linkBox">
-            <div class="link" v-for="item in link" :key="item.id">
-                <a @click="friendLink(item.url)">·{{item.name}}</a>
+            <div class="link" v-for="item in link" :key="item.linkID">
+                <a @click="friendLink(item.link)">·{{item.linkName}}</a>
             </div>
         </div>
         <div class="linkBottom">
@@ -19,19 +19,23 @@ export default {
     name: 'friendLink',
     data () {
         return {
-            link: [
-                {
-                    id: '1',
-                    name: 'test',
-                    url: 'http://www.baidu.com'
-                }
-            ]
+            link: []
         };
     },
     methods: {
         friendLink (url) {
             window.location.href = url;
         }
+    },
+    created () {
+        this.$http.get('/getLink')
+            .then((res) => {
+                console.log(res);
+                this.link = res;
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     }
 };
 </script>

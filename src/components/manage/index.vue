@@ -3,15 +3,15 @@
         <div class="dataMain">
             <div class="user num">
                 <div class="title">注册用户总数</div>
-                <div class="msg">1</div>
+                <div class="msg">{{userNum}}</div>
             </div>
             <div class="blog num">
                 <div class="title">发表博客篇数</div>
-                <div class="msg">2</div>
+                <div class="msg">{{blogNum}}</div>
             </div>
             <div class="comment num">
                 <div class="title">评论总条数</div>
-                <div class="msg">3</div>
+                <div class="msg">{{commentNum}}</div>
             </div>
         </div>
     </div>
@@ -22,8 +22,21 @@ export default {
     name: 'index',
     data () {
         return {
-
+            userNum: 0,
+            blogNum: 0,
+            commentNum: 0
         };
+    },
+    created () {
+        this.$http.get('/api/getNum')
+            .then((res) => {
+                this.userNum = res.userNum;
+                this.blogNum = res.blogNum;
+                this.commentNum = res.commentNum;
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     }
 };
 </script>
