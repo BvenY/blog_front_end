@@ -1,19 +1,23 @@
 <template>
     <div class="changeBlog" ref="data">
+        <Spin size="large" fix v-if="loading"></Spin>
+        <Modal :value.sync="visible" @on-cancel="cancel" @on-ok="ok" title="博客简介">
+            <Input v-model="blogDescription" maxlength="100" show-word-limit type="textarea" placeholder="Enter something..." style="width: 100%;resize: none;" />
+        </Modal>
         <div class="topButton">
             <div class="topInput">
                 <Input search enter-button placeholder="请输入要修改的博客ID" v-model="blogId" @on-search="findBlog" size="large"/>
                 <Input v-model="blogName" size="large" placeholder="请输入博客名字" />
                 <Select v-model="blogType" size="large" placeholder="请选择博客类型">
-                    <Option v-for="item in types" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                    <Option v-for="item in types" :value="item.label" :key="item.value">{{ item.label }}</Option>
                 </Select>
             </div>
             <div class="topSub">
-                <Button size="large" type="warning" @click="change">提交修改</Button>
+                <Button size="large" type="warning" @click="submit">提交修改</Button>
             </div>
         </div>
         <div :style="{height:height + 'px'}">
-            <mavon-editor v-model="blogValue" @save="submit"  :navigation="true"/>
+            <mavon-editor v-model="blogValue" @save="save" @change="save" :navigation="true"/>
         </div>
     </div>
 </template>
@@ -23,33 +27,86 @@ export default {
     name: 'changeBlog',
     data () {
         return {
+            visible: false,
+            loading: false,
             blogId: '',
+            blogDescription: '',
             blogValue: '',
             key: '',
             blogName: '',
             blogType: '',
-            types: [
-                {
-                    value: '1',
-                    label: 'VUE专题'
-                },
-                {
-                    value: '2',
-                    label: 'Javascript专题'
-                }
-            ],
+            types: [],
             height: 0
         };
     },
     methods: {
-        change () {
-
+        cancel () {
+            this.visible = false;
+        },
+        ok () {
+            let postData = {};
+            postData['userID'] = sessionStorage.userID;
+            postData['blogID'] = sessionStorage.changeID;
+            postData['blogType'] = this.blogType;
+            postData['blogName'] = this.blogName;
+            postData['blogMsg'] = this.blogValue;
+            postData['description'] = this.blogDescription;
+            postData = JSON.stringify(postData);
+            this.$http.post('api/changeBlog',
+                postData,
+                {
+                    headers: {'Content-Type': 'application/json'}
+                }
+            )
+                .then((res) => {
+                    this.$Message.success({
+                        content: '修改成功',
+                        background: true,
+                        center: true,
+                        duration: 1.5
+                    });
+                    this.blogValue = '';
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+            sessionStorage.removeItem('changeType');
+            sessionStorage.removeItem('changeName');
+            sessionStorage.removeItem('changeID');
+            sessionStorage.removeItem('changeDes');
+            sessionStorage.removeItem('changeBlog');
+            this.blogType = '';
+            this.blogName = '';
+            this.blogValue = '';
+            this.blogDescription = '';
         },
         findBlog () {
-
+            this.loading = true;
+            this.$http.get('searchBlog',
+                {
+                    params: {
+                        blogID: this.blogId
+                    }
+                }
+            )
+                .then((res) => {
+                    this.blogType = res.blogType;
+                    this.blogName = res.blogName;
+                    this.blogValue = res.blogMsg;
+                    this.blogDescription = res.blogDescription;
+                    sessionStorage.setItem('changeType', this.blogType);
+                    sessionStorage.setItem('changeName', this.blogName);
+                    sessionStorage.setItem('changeID', res.blogID);
+                    sessionStorage.setItem('changeDes', this.blogDescription);
+                    this.loading = false;
+                    this.blogId = '';
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
         },
         submit () {
-
+            this.visible = true;
         },
         /* 获取高度 */
         getHeight () {
@@ -65,6 +122,12 @@ export default {
                 this.height = nowH;
                 this.key++;
             }
+        },
+        save () {
+            sessionStorage.setItem('changeBlog', this.blogValue);
+            sessionStorage.setItem('changeType', this.blogType);
+            sessionStorage.setItem('changeName', this.blogName);
+            sessionStorage.setItem('changeDes', this.blogDescription);
         }
     },
     mounted () {
@@ -74,6 +137,26 @@ export default {
     },
     created () {
         this.getHeight();
+        if (sessionStorage.changeBlog) {
+            this.blogValue = sessionStorage.changeBlog;
+            this.blogType = sessionStorage.changeType;
+            this.blogName = sessionStorage.changeName;
+            this.blogDescription = sessionStorage.changeDes;
+        }
+        this.$http.get('/getType')
+            .then((res) => {
+                let types = [];
+                for (let i = 0; i < res.length; i++) {
+                    let obj = {};
+                    obj['value'] = res[i].typeID;
+                    obj['label'] = res[i].blogType;
+                    types[i] = obj;
+                }
+                this.types = types;
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     }
 };
 </script>

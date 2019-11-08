@@ -10,7 +10,7 @@
                 </Form>
             </div>
             <div class="todo">
-                <Button size="large" type="warning" shape="circle">确认</Button>
+                <Button size="large" type="warning" shape="circle" @click="sure">确认</Button>
             </div>
         </Modal>
     </div>
@@ -24,6 +24,7 @@ export default {
     data () {
         return {
             title: '',
+            typeID: '',
             visible: false,
             newData: {
                 typeName: ''
@@ -38,12 +39,65 @@ export default {
     methods: {
         cancel () {
             this.visible = false;
+        },
+        sure () {
+            let blogType = this.newData.typeName;
+            let postData = {};
+            postData['blogType'] = blogType;
+            if (this.title === '修改类型') {
+                postData['typeID'] = this.typeID;
+                this.$http.post('api/changeType',
+                    JSON.stringify(postData),
+                    {
+                        headers: {'Content-Type': 'application/json'}
+                    }
+                )
+                    .then((res) => {
+                        this.$Message.success({
+                            content: '修改成功',
+                            background: true,
+                            center: true,
+                            duration: 1
+                        });
+                    })
+                    .catch(() => {
+                        this.$Message.error({
+                            content: '该类型下有博客，无法更改',
+                            background: true,
+                            center: true,
+                            duration: 1
+                        });
+                    });
+            }
+            else {
+                this.$http.post('api/addType',
+                    JSON.stringify(postData),
+                    {
+                        headers: {'Content-Type': 'application/json'}
+                    }
+                )
+                    .then((res) => {
+                        this.$Message.success({
+                            content: '添加成功',
+                            background: true,
+                            center: true,
+                            duration: 1
+                        });
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
+            }
+            this.newData.typeName = '';
+            bus.$emit('typeChanged');
+            this.visible = false;
         }
     },
     created () {
         bus.$on('changeType', (msg) => {
             this.visible = false;
             this.visible = true;
+            this.typeID = msg;
             this.title = '修改类型';
         });
         bus.$on('addType', () => {

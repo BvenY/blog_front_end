@@ -5,7 +5,7 @@
             <Button type="primary" size="large" @click="getTable(1, 10)" icon="md-arrow-round-back" shape="circle" style="margin-left:10px" title="取消查找"></Button>
         </div>
         <Table border :columns="columns" :data="tableData" :height="tableHeight" :loading="loading">
-            <template slot-scope="{ row, index }" slot="action">
+            <template slot-scope="{ row}" slot="action">
                 <Button type="error" size="small" @click="remove(row)">删除</Button>
             </template>
         </Table>

@@ -2,17 +2,20 @@
     <div class="blogType" ref="data">
         <change-type></change-type>
         <div class="title">
-            <Input search enter-button placeholder="请输入要查找的博客类型ID" v-model="findNumber" @on-search="findUser"/>
+            <div class="search">
+                <Input search enter-button placeholder="请输入要查找的博客类型ID" v-model="findNumber" @on-search="findType"/>
+                <Button type="primary" size="large"  icon="md-arrow-round-back" shape="circle" style="margin-left:10px" title="取消查找" @click="getTable"></Button>
+            </div>
             <Button type="primary" size="large" @click="addType">添加博客类型</Button>
         </div>
-        <Table border :columns="columns1" :data="data1" :height="tableHeight">
-            <template slot-scope="{ row, index }" slot="action">
-                <Button type="primary" size="small" style="margin-right: 5px" @click="change(index)">修改</Button>
-                <Button type="error" size="small" @click="remove(index)">删除</Button>
+        <Table border :columns="columns" :data="tableData.slice((pageInfo.currentPage-1)*pageInfo.pageSize,pageInfo.currentPage*pageInfo.pageSize)" :height="tableHeight" :loading="loading">
+            <template slot-scope="{ row }" slot="action">
+                <Button type="primary" size="small" style="margin-right: 5px" @click="change(row)">修改</Button>
+                <Button type="error" size="small" @click="remove(row)">删除</Button>
             </template>
         </Table>
         <div class="page">
-            <Page :total="pageInfo.pageTotal" :current="pageInfo.currentPage" :page-size="pageInfo.pageSize" @on-change="pageChange" @on-page-size-change="pageSize" show-sizer show-total show-elevator/>
+            <Page :total="pageInfo.pageTotal"  @on-change="pageChange" @on-page-size-change="pageSize" show-sizer show-total show-elevator :page-size-opts="[5,10,20,30]"/>
         </div>
     </div>
 </template>
@@ -28,81 +31,91 @@ export default {
     },
     data () {
         return {
+            loading: false,
             findNumber: '',
             /* 通过key刷新表格 */
             table: 1,
             tableHeight: 0,
             pageInfo: {
-                pageSize: 5,
+                pageSize: 10,
                 currentPage: 1,
-                pageTotal: 500
+                pageTotal: 0
             },
-            columns1: [
+            columns: [
                 {
                     title: '类型ID',
                     align: 'center',
-                    key: 'name'
+                    key: 'typeID'
                 },
                 {
                     title: '类型名',
                     align: 'center',
                     width: 400,
-                    key: 'name'
+                    key: 'blogType'
                 },
                 {
                     title: '博客数量',
                     align: 'center',
-                    key: 'time'
+                    key: 'blogNum'
                 },
                 {
-                    title: 'Action',
+                    title: '操作',
                     slot: 'action',
                     width: 180,
                     align: 'center'
                 }
             ],
-            data1: [
-                {
-                    name: 'John Brown',
-                    time: '2016-10-03',
-                    url: 'www.baidu.com'
-                },
-                {
-                    name: 'John Brown',
-                    time: '2016-10-03',
-                    url: 'www.baidu.com'
-                },
-                {
-                    name: 'John Brown',
-                    time: '2016-10-03',
-                    url: 'www.baidu.com'
-                },
-                {
-                    name: 'John Brown',
-                    time: '2016-10-03',
-                    url: 'www.baidu.com'
-                }
-            ]
+            tableData: []
         };
     },
     methods: {
-        findUser () {
-
+        findType () {
+            this.$Message.warning({
+                content: '类型就这几个，还查？？？？？？？十年之内没得这个功能',
+                background: true,
+                center: true,
+                duration: 2
+            });
         },
-        change (index) {
-            bus.$emit('changeType', index);
+        change (row) {
+            bus.$emit('changeType', row.typeID);
         },
-        remove (index) {
-
+        remove (row) {
+            this.$http.delete('/api/deleteType',
+                {
+                    params: {
+                        typeID: row.typeID
+                    }
+                })
+                .then((res) => {
+                    this.$Message.success({
+                        content: '删除成功',
+                        background: true,
+                        center: true,
+                        duration: 1.5
+                    });
+                    this.getTable();
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
         },
         pageChange (num) {
-            console.log(num);
+            this.pageInfo.currentPage = num;
         },
         pageSize (num) {
-            console.log(num);
+            this.pageInfo.pageSize = num;
         },
         addType () {
             bus.$emit('addType');
+        },
+        /* 数组对象排序函数 */
+        compare (property) {
+            return function (obj1, obj2) {
+                let value1 = obj1[property];
+                let value2 = obj2[property];
+                return value1 - value2;// 升序
+            };
         },
         /* 获取高度 */
         getHeight () {
@@ -118,6 +131,18 @@ export default {
                 this.tableHeight = nowH;
                 this.table++;
             }
+        },
+        getTable () {
+            this.loading = true;
+            this.$http.get('getType')
+                .then((res) => {
+                    this.tableData = res.sort(this.compare('typeID'));
+                    this.loading = false;
+                    this.pageInfo.pageTotal = res.length;
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
         }
     },
     mounted () {
@@ -126,7 +151,11 @@ export default {
         });
     },
     created () {
+        this.getTable();
         this.getHeight();
+        bus.$on('typeChanged', () => {
+            this.getTable();
+        });
     }
 };
 </script>
@@ -142,12 +171,17 @@ export default {
             align-items: center;
             justify-content: space-between;
             background-color: #F5F7F9;
-            .ivu-input-wrapper{
+            .search{
                 width: 40%;
                 height: 80%;
+                display: flex;
+                .ivu-input-wrapper{
+                width: 80%;
+                height: 100%;
                 .ivu-input{
                     height: 100%;
                 }
+            }
             }
         }
     }
