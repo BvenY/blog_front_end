@@ -2,16 +2,17 @@
     <div class="comment" ref="data">
         <blog-reply></blog-reply>
         <div class="title">
-            <Input search enter-button placeholder="请输入要查找的评论ID" v-model="findNumber" @on-search="findUser"/>
+            <Input search enter-button placeholder="请输入要查找的评论的博客ID" v-model="findNumber" @on-search="findComents"/>
+            <Button type="primary" size="large"  @click="getTable(1, 10)" icon="md-arrow-round-back" shape="circle" style="margin-left:10px" title="取消查找"></Button>
         </div>
-        <Table border :columns="columns1" :data="data1" :height="tableHeight">
-            <template slot-scope="{ row, index }" slot="action">
-                <Button type="primary" size="small" style="margin-right: 5px" @click="reply(index)">查看回复</Button>
-                <Button type="error" size="small" @click="remove(index)">删除</Button>
+        <Table border :columns="columns" :data="tableData" :height="tableHeight" :loading="loading">
+            <template slot-scope="{ row }" slot="action">
+                <Button type="primary" size="small" style="margin-right: 5px" @click="reply(row)">查看回复</Button>
+                <Button type="error" size="small" @click="remove(row)">删除</Button>
             </template>
         </Table>
         <div class="page">
-            <Page :total="pageInfo.pageTotal" :current="pageInfo.currentPage" :page-size="pageInfo.pageSize" @on-change="pageChange" @on-page-size-change="pageSize" show-sizer show-total show-elevator/>
+            <Page :total="pageInfo.pageTotal"  @on-change="pageChange" @on-page-size-change="pageSize" show-sizer show-total show-elevator :page-size-opts="[5,10,20,30]"/>
         </div>
     </div>
 </template>
@@ -27,37 +28,39 @@ export default {
     },
     data () {
         return {
+            loading: false,
             findNumber: '',
             /* 通过key刷新表格 */
             table: 1,
             tableHeight: 0,
             pageInfo: {
-                pageSize: 5,
+                pageSize: 10,
                 currentPage: 1,
-                pageTotal: 500
+                pageTotal: 0
             },
-            columns1: [
+            columns: [
                 {
                     title: '评论ID',
                     align: 'center',
-                    key: 'userName'
+                    key: 'commentsID'
                 },
                 {
                     title: '评论人',
                     align: 'center',
-                    key: 'userName'
+                    key: 'commentsName'
                 },
                 {
                     title: '评论时间',
                     align: 'center',
-                    key: 'time'
+                    width: 200,
+                    key: 'commentsTime'
                 },
                 {
                     title: '评论内容',
                     align: 'center',
                     resizable: true,
                     width: 400,
-                    key: 'msg'
+                    key: 'commentsMsg'
                 },
                 {
                     title: '博客名字',
@@ -67,54 +70,74 @@ export default {
                 {
                     title: '回复数',
                     align: 'center',
-                    key: 'number'
+                    key: 'replyNum'
                 },
                 {
-                    title: 'Action',
+                    title: '操作',
                     slot: 'action',
                     width: 180,
                     align: 'center'
                 }
             ],
-            data1: [
-                {
-                    name: 'John Brown',
-                    time: '2016-10-03',
-                    url: 'www.baidu.com'
-                },
-                {
-                    name: 'John Brown',
-                    time: '2016-10-03',
-                    url: 'www.baidu.com'
-                },
-                {
-                    name: 'John Brown',
-                    time: '2016-10-03',
-                    url: 'www.baidu.com'
-                },
-                {
-                    name: 'John Brown',
-                    time: '2016-10-03',
-                    url: 'www.baidu.com'
-                }
-            ]
+            tableData: []
         };
     },
     methods: {
-        findUser () {
-
+        findComents () {
+            this.loading = true;
+            this.$http.get('api/searchComments',
+                {
+                    params: {
+                        commentsID: this.findNumber
+                    }
+                }
+            )
+                .then((res) => {
+                    for (let i = 0; i < res.length; i++) {
+                        let date = new Date(res[i].commentsTime).toJSON();
+                        let dates = new Date(+new Date(date) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '');
+                        res[i].commentsTime = dates;
+                    }
+                    this.tableData = res;
+                    this.pageInfo.pageTotal = res.length;
+                    this.loading = false;
+                })
+                .catch((err) => {
+                    console.log(err);
+                    this.loading = false;
+                });
+            this.findNumber = '';
         },
-        reply (index) {
-            bus.$emit('reply', index);
+        reply (row) {
+            bus.$emit('reply', row.commentsID);
         },
-        remove (index) {
-
+        remove (row) {
+            this.$http.delete('/api/deleteComments',
+                {
+                    params: {
+                        commentsID: row.commentsID
+                    }
+                })
+                .then((res) => {
+                    this.$Message.success({
+                        content: '删除成功',
+                        background: true,
+                        center: true,
+                        duration: 1.5
+                    });
+                    this.getTable(this.pageInfo.currentPage, this.pageInfo.pageSize);
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
         },
         pageChange (num) {
-            console.log(num);
+            this.pageInfo.currentPage = num;
+            this.getTable(this.pageInfo.currentPage, this.pageInfo.pageSize);
         },
         pageSize (num) {
-            console.log(num);
+            this.pageInfo.pageSize = num;
+            this.getTable(this.pageInfo.currentPage, this.pageInfo.pageSize);
         },
         /* 获取高度 */
         getHeight () {
@@ -130,6 +153,31 @@ export default {
                 this.tableHeight = nowH;
                 this.table++;
             }
+        },
+        getTable (pageNum, pageSize) {
+            this.loading = true;
+            this.$http.get('api/allComments',
+                {
+                    params: {
+                        pageNum: pageNum,
+                        pageSize: pageSize
+                    }
+                }
+            )
+                .then((res) => {
+                    for (let i = 0; i < res.data.length; i++) {
+                        let date = new Date(res.data[i].commentsTime).toJSON();
+                        let dates = new Date(+new Date(date) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '');
+                        res.data[i].commentsTime = dates;
+                    }
+                    this.tableData = res.data;
+                    this.pageInfo.pageTotal = res.totalCount;
+                    this.loading = false;
+                })
+                .catch((err) => {
+                    console.log(err);
+                    this.loading = false;
+                });
         }
     },
     mounted () {
@@ -138,6 +186,7 @@ export default {
         });
     },
     created () {
+        this.getTable(1, 10);
         this.getHeight();
     }
 };

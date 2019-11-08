@@ -4,16 +4,16 @@
             <Sider collapsible :collapsed-width="78" v-model="isCollapsed">
                 <Menu active-name="index" theme="dark" width="auto" :class="menuitemClasses">
                     <MenuItem name="rrturn" to="/home/index">
-                        <Icon type="ios-navigate"></Icon>
+                        <Icon type="ios-arrow-back"></Icon>
                         <span>返回</span>
                     </MenuItem>
                     <MenuItem name="index" to="/manage/index">
-                        <Icon type="ios-navigate"></Icon>
+                        <Icon type="ios-home"></Icon>
                         <span>首页</span>
                     </MenuItem>
                     <Submenu name="Blog">
                         <template slot="title">
-                            <Icon type="ios-analytics" />
+                            <Icon type="ios-book" />
                             博客管理
                         </template>
                         <MenuItem name="newBlog" to="/manage/newBlog">添加博客</MenuItem>
@@ -22,18 +22,18 @@
                         <MenuItem name="blogType" to="/manage/blogType">博客类型</MenuItem>
                     </Submenu>
                     <MenuItem name="comment" to="/manage/comment">
-                        <Icon type="ios-navigate"></Icon>
+                        <Icon type="ios-chatboxes"></Icon>
                         <span>评论管理</span>
                     </MenuItem>
                     <MenuItem name="friendLink" to="/manage/friendLink">
-                        <Icon type="ios-navigate"></Icon>
+                        <Icon type="ios-link"></Icon>
                         <span>友链管理</span>
                     </MenuItem>
                     <MenuItem name="aboutMe" to="/manage/aboutMe">
-                        <Icon type="ios-navigate"></Icon>
+                        <Icon type="ios-contact"></Icon>
                         <span>关于我</span> </MenuItem>
                     <MenuItem name="user" to="/manage/user">
-                        <Icon type="ios-navigate"></Icon>
+                        <Icon type="ios-contacts"></Icon>
                         <span>用户管理</span>
                     </MenuItem>
                 </Menu>

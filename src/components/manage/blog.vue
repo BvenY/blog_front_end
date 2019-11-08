@@ -150,7 +150,6 @@ export default {
                     }
                 })
                 .then((res) => {
-                    console.log(res);
                     let date = new Date(res.blogTime).toJSON();
                     let dates = new Date(+new Date(date) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '');
                     res.blogTime = dates;

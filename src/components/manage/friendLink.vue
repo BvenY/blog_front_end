@@ -2,17 +2,20 @@
     <div class="friendLink" ref="data">
         <change-link></change-link>
         <div class="title">
-            <Input search enter-button placeholder="请输入要查找的友链ID" v-model="findNumber" @on-search="findUser"/>
+            <div class="search">
+                <Input search enter-button placeholder="请输入要查找的友链ID" v-model="findNumber" @on-search="findLink"/>
+                <Button type="primary" size="large"  icon="md-arrow-round-back" shape="circle" style="margin-left:10px" title="取消查找" @click="getTable"></Button>
+            </div>
             <Button type="primary" size="large" @click="addLink">添加友链</Button>
         </div>
-        <Table border :columns="columns1" :data="data1" :height="tableHeight">
-            <template slot-scope="{ row, index }" slot="action">
-                <Button type="primary" size="small" style="margin-right: 5px" @click="change(index)">修改</Button>
-                <Button type="error" size="small" @click="remove(index)">删除</Button>
+        <Table border :columns="columns" :data="tableData.slice((pageInfo.currentPage-1)*pageInfo.pageSize,pageInfo.currentPage*pageInfo.pageSize)" :height="tableHeight" :loading="loading">
+            <template slot-scope="{ row }" slot="action">
+                <Button type="primary" size="small" style="margin-right: 5px" @click="change(row)">修改</Button>
+                <Button type="error" size="small" @click="remove(row)">删除</Button>
             </template>
         </Table>
         <div class="page">
-            <Page :total="pageInfo.pageTotal" :current="pageInfo.currentPage" :page-size="pageInfo.pageSize" @on-change="pageChange" @on-page-size-change="pageSize" show-sizer show-total show-elevator/>
+            <Page :total="pageInfo.pageTotal"  @on-change="pageChange" @on-page-size-change="pageSize" show-sizer show-total show-elevator :page-size-opts="[5,10,20,30]"/>
         </div>
     </div>
 </template>
@@ -28,82 +31,95 @@ export default {
     },
     data () {
         return {
+            loading: false,
             findNumber: '',
             /* 通过key刷新表格 */
             table: 1,
             tableHeight: 0,
             pageInfo: {
-                pageSize: 5,
+                pageSize: 10,
                 currentPage: 1,
-                pageTotal: 500
+                pageTotal: 0
             },
-            columns1: [
+            columns: [
                 {
                     title: '友链ID',
                     align: 'center',
-                    key: 'name'
+                    key: 'linkID'
                 },
                 {
                     title: '友链名字',
                     align: 'center',
-                    key: 'name'
+                    key: 'linkName'
                 },
                 {
                     title: 'Url',
                     align: 'center',
                     resizable: true,
                     width: 400,
-                    key: 'url'
+                    key: 'link'
                 },
                 {
-                    title: 'Action',
+                    title: '操作',
                     slot: 'action',
                     width: 180,
                     align: 'center'
                 }
             ],
-            data1: [
-                {
-                    name: 'John Brown',
-                    time: '2016-10-03',
-                    url: 'www.baidu.com'
-                },
-                {
-                    name: 'John Brown',
-                    time: '2016-10-03',
-                    url: 'www.baidu.com'
-                },
-                {
-                    name: 'John Brown',
-                    time: '2016-10-03',
-                    url: 'www.baidu.com'
-                },
-                {
-                    name: 'John Brown',
-                    time: '2016-10-03',
-                    url: 'www.baidu.com'
-                }
-            ]
+            tableData: []
         };
     },
     methods: {
-        findUser () {
-
+        findLink () {
+            this.loading = true;
+            this.$http.get('api/searchLink',
+                {
+                    params: {
+                        linkID: this.findNumber
+                    }
+                })
+                .then((res) => {
+                    this.tableData = [];
+                    this.tableData[0] = res;
+                    this.loading = false;
+                    this.findNumber = '';
+                })
+                .catch((err) => {
+                    console.log(err);
+                    this.loading = false;
+                });
         },
         addLink () {
             bus.$emit('addLink');
         },
-        change (index) {
-            bus.$emit('changeLink', index);
+        change (row) {
+            bus.$emit('changeLink', row);
         },
-        remove (index) {
-
+        remove (row) {
+            this.$http.delete('/api/deleteLink',
+                {
+                    params: {
+                        linkID: row.linkID
+                    }
+                })
+                .then((res) => {
+                    this.$Message.success({
+                        content: '删除成功',
+                        background: true,
+                        center: true,
+                        duration: 1.5
+                    });
+                    this.getTable();
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
         },
         pageChange (num) {
-            console.log(num);
+            this.pageInfo.currentPage = num;
         },
         pageSize (num) {
-            console.log(num);
+            this.pageInfo.pageSize = num;
         },
         /* 获取高度 */
         getHeight () {
@@ -119,6 +135,20 @@ export default {
                 this.tableHeight = nowH;
                 this.table++;
             }
+        },
+        getTable () {
+            this.loading = true;
+            this.$http.get('/getLink')
+                .then((res) => {
+                    this.tableData = res;
+                    this.link = res;
+                    this.pageInfo.pageTotal = res.length;
+                    this.loading = false;
+                })
+                .catch((err) => {
+                    this.loading = false;
+                    console.log(err);
+                });
         }
     },
     mounted () {
@@ -127,7 +157,11 @@ export default {
         });
     },
     created () {
+        this.getTable();
         this.getHeight();
+        bus.$on('linkChanged', () => {
+            this.getTable();
+        });
     }
 };
 </script>
@@ -140,15 +174,20 @@ export default {
             width: 100%;
             height: 50px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
             background-color: #F5F7F9;
-            .ivu-input-wrapper{
+            .search{
                 width: 40%;
                 height: 80%;
+                display: flex;
+                .ivu-input-wrapper{
+                width: 80%;
+                height: 100%;
                 .ivu-input{
                     height: 100%;
                 }
+            }
             }
         }
     }

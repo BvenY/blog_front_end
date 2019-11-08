@@ -1,17 +1,18 @@
 <template>
     <div class="aboutMe" ref="data">
+        <Spin size="large" fix v-if="loading"></Spin>
         <Button type="primary" shape="circle" icon="md-add" class="add" size="large" title="新建关于" @click="newAbout"></Button>
         <div class="msg" :style="{height:height + 'px'}" v-if="edit === false">
-            <div class="aboutMsg" v-for="(item,index) in about" :key="item.id">
+            <div class="aboutMsg" v-for="(item) in about" :key="item.msgID">
                 <div class="msgTitle">
-                    {{item.title}}
+                    {{item.msgType}}
                 </div>
                 <div class="msgData">
-                    {{item.msg}}
+                    <vue-markdown>{{item.message}}</vue-markdown>
                 </div>
                 <div class="msgButton">
-                    <Button  type="warning" style="margin-right: 15px" @click="change(index)">修改</Button>
-                    <Button  type="error" style="margin-right: 15px" @click="deletes(index)">删除</Button>
+                    <Button  type="warning" style="margin-right: 15px" @click="change(item)">修改</Button>
+                    <Button  type="error" style="margin-right: 15px" @click="deletes(item.msgID)">删除</Button>
                 </div>
             </div>
         </div>
@@ -21,69 +22,140 @@
                 <Input v-model="aboutName" size="large" placeholder="请输入标题" />
                 <div class="titleButton">
                     <Button size="large" type="primary" @click="exit">返回</Button>
-                    <Button size="large" type="warning" @click="change">提交关于</Button>
+                    <Button size="large" type="warning" @click="submit">提交关于</Button>
                 </div>
             </div>
             <div class="editMsg">
-                <mavon-editor v-model="aboutValue" @save="submit"  :navigation="true"/>
+                <mavon-editor v-model="aboutValue" @imgAdd="$imgAdd" @imgDel="$imgDel" :navigation="true"/>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import vueMarkdown from 'vue-markdown';
+
 export default {
     name: 'about_me',
+    components: {
+        vueMarkdown
+    },
     data () {
         return {
+            type: 'change',
+            loading: false,
             aboutValue: '',
             aboutName: '',
             edit: false,
             key: 0,
             height: 0,
-            about: [],
-            ahout_copy: [
-                {
-                    id: '1',
-                    title: '个人简介',
-                    msg: 'just a testjust a testjust a testjust a testjust a test'
-                },
-                {
-                    id: '2',
-                    title: '个人简介',
-                    msg: 'just a testjust a testjust a testjust a testjust a test'
-                },
-                {
-                    id: '3',
-                    title: '个人简介',
-                    msg: 'just a testjust a testjust a testjust a testjust a test'
-                },
-                {
-                    id: '4',
-                    title: '个人简介',
-                    msg: 'just a testjust a testjust a testjust a testjust a test'
-                },
-                {
-                    id: '5',
-                    title: '个人简介',
-                    msg: 'just a testjust a testjust a testjust a testjust a test'
-                }
-            ]
+            msgID: '',
+            about: []
         };
     },
     methods: {
+        // 绑定@imgAdd event
+        $imgAdd (pos, $file) {
+            // 第一步.将图片上传到服务器.
+            let formdata = new FormData();
+            formdata.append('image', $file);
+            this.$http.post('/api/uploadImg',
+                formdata,
+                {
+                    headers: {'Content-Type': 'multipart/form-data'}
+                }
+            )
+                .then((res) => {
+                    this.$refs.md.$img2Url(pos, res);
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        },
+        $imgDel (pos) {
+            delete this.img_file[pos];
+        },
         newAbout () {
+            this.type = 'add';
             this.edit = true;
+            this.aboutValue = '';
+            this.aboutName = '';
         },
-        change (index) {
-            console.log(index);
+        change (item) {
+            this.type = 'change';
             this.edit = true;
-        },
-        deletes (index) {
-
+            this.aboutValue = item.message;
+            this.aboutName = item.msgType;
+            this.msgID = item.msgID;
         },
         submit () {
-
+            let postData = {};
+            postData['message'] = this.aboutValue;
+            postData['msgType'] = this.aboutName;
+            if (this.type === 'add') {
+                postData['userID'] = sessionStorage.userID;
+                this.$http.post('/api/addMsg',
+                    JSON.stringify(postData),
+                    {
+                        headers: {'Content-Type': 'application/json'}
+                    }
+                )
+                    .then(() => {
+                        this.$Message.success({
+                            content: '新增成功',
+                            background: true,
+                            center: true,
+                            duration: 1
+                        });
+                        this.edit = false;
+                        this.getData();
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
+            }
+            else {
+                postData['msgID'] = this.msgID;
+                this.$http.post('/api/changeMsg',
+                    JSON.stringify(postData),
+                    {
+                        headers: {'Content-Type': 'application/json'}
+                    }
+                )
+                    .then(() => {
+                        this.$Message.success({
+                            content: '修改成功',
+                            background: true,
+                            center: true,
+                            duration: 1
+                        });
+                        this.edit = false;
+                        this.getData();
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
+            }
+        },
+        deletes (id) {
+            this.$http.delete('/api/deleteMsg',
+                {
+                    params: {
+                        msgID: id
+                    }
+                })
+                .then((res) => {
+                    this.$Message.success({
+                        content: '删除成功',
+                        background: true,
+                        center: true,
+                        duration: 1.5
+                    });
+                    this.getData();
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
         },
         exit () {
             this.edit = false;
@@ -102,15 +174,28 @@ export default {
                 this.height = nowH;
                 this.key++;
             }
+        },
+        getData () {
+            this.loading = true;
+            this.$http.get('getMsg'
+            )
+                .then((res) => {
+                    this.about = res;
+                    this.loading = false;
+                })
+                .catch((err) => {
+                    console.log(err);
+                    this.loading = false;
+                });
         }
     },
     mounted () {
         this.$nextTick(() => {
             this.height = this.$refs.data.offsetHeight - 1;
-            this.about = this.ahout_copy;
         });
     },
     created () {
+        this.getData();
         this.getHeight();
     }
 };

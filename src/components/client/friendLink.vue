@@ -30,7 +30,6 @@ export default {
     created () {
         this.$http.get('/getLink')
             .then((res) => {
-                console.log(res);
                 this.link = res;
             })
             .catch((err) => {

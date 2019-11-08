@@ -14,7 +14,7 @@
                 </Form>
             </div>
             <div class="todo">
-                <Button size="large" type="warning" shape="circle">确认</Button>
+                <Button size="large" type="warning" shape="circle" @click="sure">确认</Button>
             </div>
         </Modal>
     </div>
@@ -31,7 +31,8 @@ export default {
             visible: false,
             newData: {
                 linkName: '',
-                linkURL: ''
+                linkURL: '',
+                linkID: ''
             },
             newRule: {
                 linkName: [
@@ -46,6 +47,55 @@ export default {
     methods: {
         cancel () {
             this.visible = false;
+        },
+        sure () {
+            let postData = {};
+            postData['linkID'] = this.newData.linkID;
+            postData['link'] = this.newData.linkURL;
+            postData['linkName'] = this.newData.linkName;
+            if (this.title === '修改友链') {
+                this.$http.post('api/changeLink',
+                    JSON.stringify(postData),
+                    {
+                        headers: {'Content-Type': 'application/json'}
+                    }
+                )
+                    .then((res) => {
+                        this.$Message.success({
+                            content: '修改成功',
+                            background: true,
+                            center: true,
+                            duration: 1
+                        });
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
+            }
+            else {
+                this.$http.post('api/addLink',
+                    JSON.stringify(postData),
+                    {
+                        headers: {'Content-Type': 'application/json'}
+                    }
+                )
+                    .then((res) => {
+                        this.$Message.success({
+                            content: '添加成功',
+                            background: true,
+                            center: true,
+                            duration: 1
+                        });
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
+            }
+            this.newData.linkName = '';
+            this.newData.linkURL = '';
+            this.newData.linkID = '';
+            bus.$emit('linkChanged');
+            this.visible = false;
         }
     },
     created () {
@@ -53,6 +103,9 @@ export default {
             this.visible = false;
             this.visible = true;
             this.title = '修改友链';
+            this.newData.linkID = msg.linkID;
+            this.newData.linkName = msg.linkName;
+            this.newData.linkURL = msg.link;
         });
         bus.$on('addLink', () => {
             this.visible = false;

@@ -17,7 +17,7 @@
             </div>
         </div>
         <div :style="{height:height + 'px'}">
-            <mavon-editor v-model="blogValue" @save="save" @change="save" :navigation="true"/>
+            <mavon-editor v-model="blogValue" @save="save" @change="save" @imgAdd="$imgAdd" @imgDel="$imgDel" :navigation="true"/>
         </div>
     </div>
 </template>
@@ -40,6 +40,27 @@ export default {
         };
     },
     methods: {
+        // 绑定@imgAdd event
+        $imgAdd (pos, $file) {
+            // 第一步.将图片上传到服务器.
+            let formdata = new FormData();
+            formdata.append('image', $file);
+            this.$http.post('/api/uploadImg',
+                formdata,
+                {
+                    headers: {'Content-Type': 'multipart/form-data'}
+                }
+            )
+                .then((res) => {
+                    this.$refs.md.$img2Url(pos, res);
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        },
+        $imgDel (pos) {
+            delete this.img_file[pos];
+        },
         cancel () {
             this.visible = false;
         },
