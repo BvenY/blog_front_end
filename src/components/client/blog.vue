@@ -2,14 +2,11 @@
     <div class="blogContainer">
         <!-- 博客显示 -->
         <div class="blog">
-            <div class="title">Hello World {{id}}</div>
-            <div class="time">2015-11-28</div>
-            <div class="description">Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.</div>
+            <div class="title">{{blog.blogName}}</div>
+            <div class="time">{{blog.blogTime}}</div>
+            <div class="description">{{blog.blogDescription}}</div>
             <div class="msg">
-                just a test
-                just a test
-                just a test
-                just a test
+                <vue-markdown>{{blog.blogMsg}}</vue-markdown>
             </div>
         </div>
         <!-- 评论区 -->
@@ -23,46 +20,48 @@
                     </div>
 
                     <div class="send">
-                        <Button type="info" shape="circle" icon="md-checkmark" @click="loginOpen">提交评论</Button>
+                        <Button type="info" shape="circle" icon="md-checkmark" @click="comments">提交评论</Button>
                     </div>
             </div>
             <!-- 已有评论 -->
-            <div class="commentMsg" v-for="item in comment" :key="item.id">
+            <div class="commentMsg" v-for="(item, index) in comment" :key="item.commentsID">
                 <div class="commentName">
                     <div class="userName">
-                        {{item.commentUser}}
+                        {{item.commentsName}}
                     </div>
                     <div class="time">
-                        {{item.commentTime}}
+                        {{item.commentsTime}}
                     </div>
                 </div>
                 <div class="commentData">
-                    {{item.commentMsg}}
+                    {{item.commentsMsg}}
                 </div>
                 <div class="commentButton">
-                    <Button type="text" shape="circle" icon="md-checkmark" @click="replyOpen">回复</Button>
+                    <Button type="text" shape="circle" icon="md-checkmark" @click="replyOpen(index)">回复</Button>
                 </div>
                 <!-- 回复区 -->
-                <div class="replyInput" v-if='reply === true'>
+                <div class="replyInput" v-if='item.replys === true'>
                     <div class="msg">
-                        <Input v-model="commentMsg" maxlength="100" show-word-limit type="textarea" placeholder="Enter something..." style="width: 100%;resize: none;" />
+                        <Input v-model="replyMsg" maxlength="100" show-word-limit type="textarea" placeholder="Enter something..." style="width: 100%;resize: none;" />
                     </div>
 
                     <div class="send">
-                        <Button type="info" shape="circle" icon="md-checkmark">提交回复</Button>
+                        <Button type="info" shape="circle" icon="md-checkmark" @click="replys(item.commentsID)">提交回复</Button>
                     </div>
                 </div>
                 <!-- 已有回复 -->
-                <div class="replyName" v-for="reply in item.reply" :key="reply.id">
-                    <div class="userName">
-                        {{reply.replyUser}}
+                <div class="reply" v-for="reply in item.reply" :key="reply.replyID">
+                    <div class="replyName">
+                        <div class="userName">
+                            {{reply.replyName}}
+                        </div>
+                        <div class="time">
+                            {{reply.replyTime}}
+                        </div>
                     </div>
-                    <div class="time">
-                        {{reply.replyTime}}
+                    <div class="replyMsg">
+                        {{reply.replyMsg}}
                     </div>
-                </div>
-                <div class="replyMsg" v-for="reply in item.reply" :key="reply.id">
-                    {{reply.replyMsg}}
                 </div>
             </div>
         </div>
@@ -72,50 +71,161 @@
 <script>
 import blogLogin from './login';
 import bus from './bus';
+import vueMarkdown from 'vue-markdown';
 
 export default {
     name: 'blog',
     components: {
-        blogLogin
+        blogLogin,
+        vueMarkdown
     },
     data () {
         return {
             id: '',
+            blog: {
+                blogDescription: '',
+                blogMsg: '',
+                blogName: '',
+                blogTime: ''
+            },
             commentMsg: '',
+            replyMsg: '',
             reply: false,
-            comment: [
-                {
-                    commentId: '1',
-                    commentUser: 'BvenY',
-                    commentTime: '2019-08-10',
-                    commentMsg: 'just a test just a test',
-                    reply: [
-                        {
-                            replyId: '1',
-                            replyUser: 'TEst',
-                            replyTime: '2019-08-08',
-                            replyMsg: 'just a test'
-                        }
-                    ]
-                }
-            ]
+            comment: []
         };
     },
     methods: {
-        replyOpen () {
-            this.reply = !(this.reply);
+        replyOpen (index) {
+            if (!sessionStorage.token) {
+                bus.$emit('login');
+            }
+            else {
+                this.comment[index].replys = !(this.comment[index].replys);
+            }
         },
-        loginOpen () {
-            this.$store.state.login = true;
-            bus.$emit('login');
+        replys (id) {
+            let postData = {};
+            postData['userID'] = sessionStorage.userID;
+            postData['commentsID'] = this.id;
+            postData['replyMsg'] = this.replyMsg;
+            this.$http.post('api/addReply',
+                JSON.stringify(postData),
+                {
+                    headers: {'Content-Type': 'application/json'}
+                }
+            )
+                .then((res) => {
+                    this.$Message.success({
+                        content: '回复成功',
+                        background: true,
+                        center: true,
+                        duration: 1
+                    });
+                    this.replyMsg = '';
+                    this.reply = !(this.reply);
+                    this.getComments();
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        },
+        comments () {
+            if (!sessionStorage.token) {
+                bus.$emit('login');
+            }
+            else {
+                if (this.commentMsg === '') {
+                    this.$Message.warning({
+                        content: '评论不得为空',
+                        background: true,
+                        center: true,
+                        duration: 1
+                    });
+                }
+                else {
+                    let postData = {};
+                    postData['userID'] = sessionStorage.userID;
+                    postData['blogID'] = this.id;
+                    postData['commentsMsg'] = this.commentMsg;
+                    this.$http.post('api/addComments',
+                        JSON.stringify(postData),
+                        {
+                            headers: {'Content-Type': 'application/json'}
+                        }
+                    )
+                        .then((res) => {
+                            this.$Message.success({
+                                content: '感谢您的反馈',
+                                background: true,
+                                center: true,
+                                duration: 1
+                            });
+                            this.commentMsg = '';
+                            this.getComments();
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                        });
+                }
+            }
+        },
+        getBlog () {
+            this.$http.get('searchBlog',
+                {
+                    params: {
+                        blogID: this.id
+                    }
+                })
+                .then((res) => {
+                    let date = new Date(res.blogTime).toJSON();
+                    let dates = new Date(+new Date(date) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '');
+                    res.blogTime = dates;
+                    this.blog.blogDescription = res.blogDescription;
+                    this.blog.blogMsg = res.blogMsg;
+                    this.blog.blogName = res.blogName;
+                    this.blog.blogTime = res.blogTime;
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        },
+        getComments () {
+            this.$http.get('getComments',
+                {
+                    params: {
+                        blogID: this.id
+                    }
+                })
+                .then((res) => {
+                    for (let i = 0; i < res.length; i++) {
+                        let date = new Date(res[i].commentsTime).toJSON();
+                        let dates = new Date(+new Date(date) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '');
+                        res[i].commentsTime = dates;
+                        res[i]['replys'] = false;
+                        for (let j = 0; j < res[i].reply.length; j++) {
+                            let date = new Date(res[i].reply[j].replyTime).toJSON();
+                            let dates = new Date(+new Date(date) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '');
+                            res[i].reply[j].replyTime = dates;
+                        }
+                    }
+                    console.log(res);
+                    this.comment = res;
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
         }
     },
     mounted () {
         this.id = this.$route.params.blogId;
+        this.getBlog();
+        this.getComments();
     },
     watch: {
         '$route' (to, from) {
             this.id = this.$route.params.blogId;
+            this.getBlog();
+            this.getComments();
         }
     }
 };
@@ -272,6 +382,14 @@ export default {
                     align-items: center;
                     height: 30%;
                 }
+                }
+                .reply{
+                    margin-top: 5px;
+                    width: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                    align-items: center;
                 }
                 .replyName{
                     margin-top: 5px;

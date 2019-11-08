@@ -1,45 +1,46 @@
 <template>
     <div class="aboutContainer">
-        <div class="aboutMsg" v-for="item in about" :key="item.id">
+        <div class="aboutMsg" v-for="item in about" :key="item.msgID">
             <div class="aboutTitle">
-                {{item.title}}
+                {{item.msgType}}
             </div>
-            <div class="aboutMsg">
-                {{item.msg}}
+            <div class="about">
+                <vue-markdown>{{item.message}}</vue-markdown>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import vueMarkdown from 'vue-markdown';
+
 export default {
     name: 'about_me',
+    components: {
+        vueMarkdown
+    },
     data () {
         return {
-            about: [
-                {
-                    title: '个人简介：',
-                    id: '1',
-                    msg: 'just a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a test'
-                },
-                {
-                    title: '个人简介：',
-                    id: '2',
-                    msg: 'just a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a test'
-                },
-                {
-                    title: '个人简介：',
-                    id: '31',
-                    msg: 'just a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a test'
-                },
-                {
-                    title: '个人简介：',
-                    id: '4',
-                    msg: 'just a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a testjust a test'
-                }
-
-            ]
+            about: []
         };
+    },
+    methods: {
+        getData () {
+            this.loading = true;
+            this.$http.get('getMsg'
+            )
+                .then((res) => {
+                    this.about = res;
+                    this.loading = false;
+                })
+                .catch((err) => {
+                    console.log(err);
+                    this.loading = false;
+                });
+        }
+    },
+    created () {
+        this.getData();
     }
 };
 </script>
@@ -67,7 +68,7 @@ export default {
                 align-items: center;
                 color: #031C67;
             }
-            .aboutMsg{
+            .about{
                 width: 95%;
                 height: auto;
                 font-size: 1.3em;

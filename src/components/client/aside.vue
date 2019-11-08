@@ -12,7 +12,7 @@
                             友链
                         </MenuItem>
                     <MenuGroup title="博客分类">
-                        <MenuItem  v-for="item in menus" :key='item.typeID' :name="item.typeID" >
+                        <MenuItem  v-for="item in menus" :key='item.typeID' :name="item.blogType" >
                             <Icon :type="item.icon" />
                             {{item.blogType}}
                         </MenuItem>
@@ -26,7 +26,7 @@
                             <Icon type="md-document" />
                             最近发表
                         </MenuItem>
-                        <MenuItem  v-for="item in menus" :key='item.typeID' :name="item.typeID" >
+                        <MenuItem  v-for="item in menus" :key='item.typeID' :name="item.blogType" >
                             <Icon :type="item.icon" />
                             {{item.blogType}}
                         </MenuItem>
@@ -46,7 +46,7 @@ export default {
     },
     methods: {
         startType (name) {
-            this.$router.push({name: 'typeBlog', params: {typeId: name}});
+            this.$router.push({name: 'typeBlog', params: {typeName: name}});
         }
     },
     created () {

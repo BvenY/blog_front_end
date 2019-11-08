@@ -64,14 +64,6 @@ export default {
             if (sessionStorage.userType === '1' || sessionStorage.userType === '520') {
                 this.$router.push({path: '/manage/index'});
             }
-            else {
-                this.$Message.warning({
-                    content: '您没有该权限',
-                    background: true,
-                    center: true,
-                    duration: 2
-                });
-            }
         });
         bus.$on('newSuc', () => {
             this.login = false;

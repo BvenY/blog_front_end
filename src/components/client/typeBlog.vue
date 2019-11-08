@@ -1,18 +1,18 @@
 <template>
     <div class="typeContainer">
-        <div class="blogMsg" v-for="item in blog" :key='item.id' @click="startBlog(item)">
+        <div class="blogMsg" v-for="item in blog.slice((pageInfo.currentPage-1)*pageInfo.pageSize,pageInfo.currentPage*pageInfo.pageSize)" :key='item.blogID' @click="startBlog(item)">
             <div class="blogTile">
-                {{item.title}}
+                {{item.blogName}}
             </div>
             <div class="blogTime">
-                {{item.user}} || {{item.time}}
+                {{item.userName}} || {{item.blogTime}}
             </div>
             <div class="blogDescription">
-                {{item.description}}
+                {{item.blogDescription}}
             </div>
         </div>
         <div class="typePage">
-            <Page :current="2" :total="62" simple :page-size="10"/>
+            <Page :total="pageInfo.pageTotal"  @on-change="pageChange" @on-page-size-change="pageSize" show-sizer show-total show-elevator :page-size-opts="[5,10,20,30]"/>
         </div>
     </div>
 </template>
@@ -23,63 +23,60 @@ export default {
     data () {
         return {
             id: '',
-            blog: [
-                {
-                    title: 'Hello World',
-                    time: '2019-10-28 16:30:28',
-                    user: 'BvenY',
-                    description: '这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试',
-                    id: '1'
-                },
-                {
-                    title: 'Hello World1',
-                    time: '2019-10-28 16:30:28',
-                    user: 'BvenY',
-                    description: '这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试',
-                    id: '11'
-                },
-                {
-                    title: 'Hello World2',
-                    time: '2019-10-28 16:30:28',
-                    user: 'BvenY',
-                    description: '这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试',
-                    id: '111'
-                },
-                {
-                    title: 'Hello World3',
-                    time: '2019-10-28 16:30:28',
-                    user: 'BvenY',
-                    description: '这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试',
-                    id: '1111'
-                },
-                {
-                    title: 'Hello World13',
-                    time: '2019-10-28 16:30:28',
-                    user: 'BvenY',
-                    description: '这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试这只是一个测试',
-                    id: '11111'
-                }
-            ]
+            pageInfo: {
+                pageSize: 10,
+                currentPage: 1,
+                pageTotal: 0
+            },
+            blog: []
         };
     },
     methods: {
         startBlog (item) {
-            let id = item.id;
+            let id = item.blogID;
             this.$router.push({name: 'blog', params: {blogId: id}});
+        },
+        getBlog () {
+            this.blog = [];
+            let postData = {};
+            postData['typeName'] = this.id;
+            this.$http.post('typeBlog',
+                JSON.stringify(postData),
+                {
+                    headers: {'Content-Type': 'application/json'}
+                }
+            )
+                .then((res) => {
+                    for (let i = 0; i < res.length; i++) {
+                        let date = new Date(res[i].blogTime).toJSON();
+                        let dates = new Date(+new Date(date) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '');
+                        res[i].blogTime = dates;
+                    }
+                    this.blog = res;
+                    this.pageInfo.pageTotal = res.length;
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        },
+        pageChange (num) {
+            this.pageInfo.currentPage = num;
+        },
+        pageSize (num) {
+            this.pageInfo.pageSize = num;
         }
     },
     mounted () {
-        this.id = this.$route.params.typeId;
-        this.blog[0].title = this.id;
+        this.id = this.$route.params.typeName;
+        this.getBlog();
     },
     watch: {
         '$route' (to, from) {
-            this.id = this.$route.params.typeId;
-            this.blog[0].title = this.id;
+            this.id = this.$route.params.typeName;
+            this.getBlog();
         }
     },
     created () {
-
     }
 };
 </script>
