@@ -5,8 +5,9 @@
             <div class="title">{{blog.blogName}}</div>
             <div class="time">{{blog.blogTime}}</div>
             <div class="description">{{blog.blogDescription}}</div>
-            <div class="msg">
-                <vue-markdown>{{blog.blogMsg}}</vue-markdown>
+            <div class="blogMsgs">
+                <!-- <vue-markdown v-if="dataGet">{{blog.blogMsg}}</vue-markdown> -->
+                <mavon-editor defaultOpen="preview" :toolbarsFlag="false" :subfield="false" :preview="true" v-model="blog.blogMsg"  ></mavon-editor>
             </div>
         </div>
         <!-- 评论区 -->
@@ -81,7 +82,9 @@ export default {
     },
     data () {
         return {
+            dataGet: false,
             id: '',
+            blogMsg: '',
             blog: {
                 blogDescription: '',
                 blogMsg: '',
@@ -104,30 +107,40 @@ export default {
             }
         },
         replys (id) {
-            let postData = {};
-            postData['userID'] = sessionStorage.userID;
-            postData['commentsID'] = this.id;
-            postData['replyMsg'] = this.replyMsg;
-            this.$http.post('api/addReply',
-                JSON.stringify(postData),
-                {
-                    headers: {'Content-Type': 'application/json'}
-                }
-            )
-                .then((res) => {
-                    this.$Message.success({
-                        content: '回复成功',
-                        background: true,
-                        center: true,
-                        duration: 1
-                    });
-                    this.replyMsg = '';
-                    this.reply = !(this.reply);
-                    this.getComments();
-                })
-                .catch((err) => {
-                    console.log(err);
+            if (!this.replyMsg) {
+                this.$Message.warning({
+                    content: '评论不得为空',
+                    background: true,
+                    center: true,
+                    duration: 1
                 });
+            }
+            else {
+                let postData = {};
+                postData['userID'] = sessionStorage.userID;
+                postData['commentsID'] = this.id;
+                postData['replyMsg'] = this.replyMsg;
+                this.$http.post('api/addReply',
+                    JSON.stringify(postData),
+                    {
+                        headers: {'Content-Type': 'application/json'}
+                    }
+                )
+                    .then((res) => {
+                        this.$Message.success({
+                            content: '回复成功',
+                            background: true,
+                            center: true,
+                            duration: 1
+                        });
+                        this.replyMsg = '';
+                        this.reply = !(this.reply);
+                        this.getComments();
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
+            }
         },
         comments () {
             if (!sessionStorage.token) {
@@ -170,6 +183,7 @@ export default {
             }
         },
         getBlog () {
+            this.dataGet = false;
             this.$http.get('searchBlog',
                 {
                     params: {
@@ -184,9 +198,11 @@ export default {
                     this.blog.blogMsg = res.blogMsg;
                     this.blog.blogName = res.blogName;
                     this.blog.blogTime = res.blogTime;
+                    this.dataGet = true;
                 })
                 .catch((err) => {
                     console.log(err);
+                    this.dataGet = true;
                 });
         },
         getComments () {
@@ -197,19 +213,20 @@ export default {
                     }
                 })
                 .then((res) => {
-                    for (let i = 0; i < res.length; i++) {
-                        let date = new Date(res[i].commentsTime).toJSON();
-                        let dates = new Date(+new Date(date) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '');
-                        res[i].commentsTime = dates;
-                        res[i]['replys'] = false;
-                        for (let j = 0; j < res[i].reply.length; j++) {
-                            let date = new Date(res[i].reply[j].replyTime).toJSON();
+                    if (res) {
+                        for (let i = 0; i < res.length; i++) {
+                            let date = new Date(res[i].commentsTime).toJSON();
                             let dates = new Date(+new Date(date) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '');
-                            res[i].reply[j].replyTime = dates;
+                            res[i].commentsTime = dates;
+                            res[i]['replys'] = false;
+                            for (let j = 0; j < res[i].reply.length; j++) {
+                                let date = new Date(res[i].reply[j].replyTime).toJSON();
+                                let dates = new Date(+new Date(date) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '');
+                                res[i].reply[j].replyTime = dates;
+                            }
                         }
+                        this.comment = res;
                     }
-                    console.log(res);
-                    this.comment = res;
                 })
                 .catch((err) => {
                     console.log(err);
@@ -246,15 +263,15 @@ export default {
                 @media screen{
                 width: 100%;
                 height: 60px;
-                font-size: 3.5em;
+                font-size: 2.5em;
                 text-indent: 0.2em;
                 display: flex;
                 align-items: center;
                 @media (max-width:425px){
-                    font-size: 2.2em;
+                    font-size: 1.4em;
                 }
                 @media (max-width:1024px) and (min-width: 425px){
-                    font-size: 3em;
+                    font-size: 2em;
                 }
                 }
             }
@@ -270,10 +287,12 @@ export default {
                 color: gray;
                 font-size: 1.2em;
             }
-            .msg{
+            .blogMsgs{
+                widows: 100%;
+                height: auto;
                 margin-top: 10px;
                 text-indent: 2em;
-                font-size: 1.5em;
+                font-size: 1.2em;
             }
         }
         .comment{

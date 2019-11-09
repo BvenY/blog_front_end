@@ -82,6 +82,8 @@ export default {
                         duration: 1.5
                     });
                     this.blogValue = '';
+                    this.blogName = '';
+                    this.blogType = '';
                 })
                 .catch((err) => {
                     console.log(err);
