@@ -1,7 +1,8 @@
 import Vue from 'vue';
-import Router from 'vue-router';
+// import Router from 'vue-router';
 import bus from '../components/client/bus';
 import { Message } from 'view-design';
+const Router = require('vue-router');
 
 Vue.use(Router);
 

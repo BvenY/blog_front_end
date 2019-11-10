@@ -12,7 +12,7 @@
             </div>
         </div>
         <div class="typePage">
-            <Page :total="pageInfo.pageTotal"  @on-change="pageChange" @on-page-size-change="pageSize" show-sizer show-total show-elevator :page-size-opts="[5,10,20,30]"/>
+            <Page :total="pageInfo.pageTotal"  @on-change="pageChange" @on-page-size-change="pageSize" show-sizer show-total  :page-size-opts="[5,10,20,30]"/>
         </div>
     </div>
 </template>
