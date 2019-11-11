@@ -127,7 +127,7 @@ export default {
                 @media screen{
                     width: 70%;
                     height: 10%;
-                    font-size: 4em;
+                    font-size: 3em;
                     display: flex;
                     justify-content: center;
                     align-items: center;
@@ -141,7 +141,7 @@ export default {
                 @media (max-width:1024px) and (min-width: 425px){
                     width: 40%;
                     height: 20%;
-                    font-size: 2em;
+                    font-size: 1.6em;
                 }
                 }
             }

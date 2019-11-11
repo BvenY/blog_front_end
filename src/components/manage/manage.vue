@@ -40,8 +40,11 @@
             </Sider>
             <Layout>
                 <Header :style="{background: '#fff', boxShadow: '0 2px 3px 2px rgba(0,0,0,.1)'}">
-                    <div class="name">
+                    <div class="name" v-if="type === '1'">
                         <img alt="myself logo" src="../../assets/img/logo.png">20岁菜鸡前端想进腾讯
+                    </div>
+                    <div class="name" style="color:pink" v-if="type === '520'">
+                        <img alt="myself logo" src="../../assets/img/dear.png">欢迎老婆大人视察工作
                     </div>
                     <div class="user">
                         <Dropdown trigger="click">
@@ -72,6 +75,7 @@ export default {
     name: 'manage',
     data () {
         return {
+            type: '1',
             isCollapsed: false,
             username: sessionStorage.userName
         };
@@ -88,6 +92,14 @@ export default {
                 'menu-item',
                 this.isCollapsed ? 'collapsed-menu' : ''
             ];
+        }
+    },
+    created () {
+        if (sessionStorage.userType === '1') {
+            this.type = '1';
+        }
+        else if (sessionStorage.userType === '520') {
+            this.type = '520';
         }
     }
 };

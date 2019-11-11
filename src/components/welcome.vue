@@ -99,24 +99,40 @@ export default {
     border-radius: 45%;
   }
   .name{
-    width: 50%;
-    height: 20%;
-    font-size: 4em;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #F1F3F4;
-    border-bottom: 0.5px solid #3F3F41;
+    @media screen{
+      width: 50%;
+      height: 20%;
+      font-size: 4em;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #F1F3F4;
+      border-bottom: 0.5px solid #3F3F41;
+      @media (max-width:425px){
+        font-size: 2.3em;
+      }
+      @media (max-width:768px) and (min-width: 425px){
+        font-size: 3em;
+      }
+    }
   }
   .description{
-    margin-top: 5%;
-    width: 50%;
-    height: 10%;
-    font-size: 1.3em;
-    color: #F1F3F4;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    @media screen{
+      margin-top: 5%;
+      width: 50%;
+      height: 10%;
+      font-size: 1.3em;
+      color: #F1F3F4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      @media (max-width:425px){
+        font-size: 1em;
+      }
+      @media (max-width:768px) and (min-width: 425px){
+        font-size: 1em;
+      }
+    }
   }
   .hr{
     margin-top: 3%;

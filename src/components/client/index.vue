@@ -61,13 +61,21 @@ export default {
             cursor: pointer;
             min-height: 150px;
             .blogTile{
-                width: 100%;
-                height: 30%;
-                font-size: 2.5em;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                color: gray;
+                @media screen{
+                    width: 100%;
+                    height: 30%;
+                    font-size: 2em;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    color: gray;
+                @media (max-width:425px){
+                    font-size: 1.4em;
+                }
+                @media (max-width:1024px) and (min-width: 425px){
+                    font-size: 1.6em;
+                }
+                }
             }
             .blogTime{
                 width: 100%;

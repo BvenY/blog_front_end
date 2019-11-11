@@ -291,7 +291,6 @@ export default {
                 widows: 100%;
                 height: auto;
                 margin-top: 10px;
-                text-indent: 2em;
                 font-size: 1.2em;
                 .v-note-wrapper{
                     z-index: 1;

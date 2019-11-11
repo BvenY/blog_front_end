@@ -63,7 +63,6 @@ export default {
                 width: 100%;
                 height: 50px;
                 font-size: 2em;
-                text-indent: 2em;
                 display: flex;
                 align-items: center;
                 color: #031C67;
@@ -72,7 +71,6 @@ export default {
                 width: 95%;
                 height: auto;
                 font-size: 1.3em;
-                text-indent: 2em;
                 color: black;
             }
         }
