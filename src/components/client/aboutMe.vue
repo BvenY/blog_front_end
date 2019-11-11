@@ -2,7 +2,7 @@
     <div class="aboutContainer">
         <div class="aboutMsg" v-for="item in about" :key="item.msgID">
             <div class="aboutTitle">
-                {{item.msgType}}
+                ●{{item.msgType}}
             </div>
             <div class="about">
                 <vue-markdown>{{item.message}}</vue-markdown>
@@ -62,17 +62,27 @@ export default {
             .aboutTitle{
                 width: 100%;
                 height: 50px;
-                font-size: 2em;
+                font-size: 1.8em;
+                text-indent: 0.5em;
                 display: flex;
                 align-items: center;
                 color: #031C67;
             }
             .about{
+            @media screen{
                 width: 95%;
                 height: auto;
-                font-size: 1.3em;
+                text-indent: 1.6em;
+                font-size: 1.2em;
                 color: black;
+            @media (max-width:425px){
+                font-size: 0.9em;
             }
+            @media (max-width:1024px) and (min-width: 425px){
+                font-size: 1.1em;
+            }
+        }
+        }
         }
     }
 </style>
