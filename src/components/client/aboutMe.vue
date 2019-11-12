@@ -5,7 +5,8 @@
                 ●{{item.msgType}}
             </div>
             <div class="about">
-                <vue-markdown>{{item.message}}</vue-markdown>
+                <mavon-editor defaultOpen="preview" :toolbarsFlag="false" :subfield="false" :preview="true" v-model="item.message"  style="min-height: 100px"></mavon-editor>
+                <!-- <vue-markdown>{{item.message}}</vue-markdown> -->
             </div>
         </div>
     </div>
@@ -63,7 +64,7 @@ export default {
                 width: 100%;
                 height: 50px;
                 font-size: 1.8em;
-                text-indent: 0.5em;
+                text-indent: 1em;
                 display: flex;
                 align-items: center;
                 color: #031C67;
@@ -72,7 +73,6 @@ export default {
             @media screen{
                 width: 95%;
                 height: auto;
-                text-indent: 1.6em;
                 font-size: 1.2em;
                 color: black;
             @media (max-width:425px){

@@ -52,19 +52,22 @@ export default {
         flex-direction: column;
         display: flex;
         align-items: center;
-        // overflow-y: scroll;
         .blogMsg{
             margin-top: 2em;
             width: 90%;
             height: 20%;
-            border-bottom: 1px solid #E8EAED;
+            box-shadow: 0 2px 3px 2px rgba(0,0,0,.1);
             cursor: pointer;
             min-height: 150px;
+            &:hover{
+                box-shadow: 0 4px 5px 4px rgba(0,0,0,.1);
+            }
             .blogTile{
                 @media screen{
+                    margin-top: 5px;
                     width: 100%;
                     height: 30%;
-                    font-size: 2em;
+                    font-size: 1.8em;
                     display: flex;
                     justify-content: center;
                     align-items: center;

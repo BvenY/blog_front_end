@@ -99,7 +99,7 @@ export default {
                 @media screen{
                     width: 100%;
                     height: 30%;
-                    font-size: 2.3em;
+                    font-size: 1.8em;
                     display: flex;
                     justify-content: center;
                     align-items: center;

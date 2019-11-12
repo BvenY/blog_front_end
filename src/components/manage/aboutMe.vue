@@ -8,7 +8,7 @@
                     {{item.msgType}}
                 </div>
                 <div class="msgData">
-                    <vue-markdown>{{item.message}}</vue-markdown>
+                    <mavon-editor defaultOpen="preview" :toolbarsFlag="false" :subfield="false" :preview="true" v-model="item.message"  style="min-height: 100px" :boxShadow="false"></mavon-editor>
                 </div>
                 <div class="msgButton">
                     <Button  type="warning" style="margin-right: 15px" @click="change(item)">修改</Button>
@@ -218,6 +218,7 @@ export default {
             align-items: center;
             overflow-y: scroll;
             .aboutMsg{
+                background-color: #FBFBFB;
                 margin-top: 10px;
                 width: 95%;
                 height: auto;
@@ -235,7 +236,6 @@ export default {
                     width: 100%;
                     height: auto;
                     font-size: 1.3em;
-                    text-indent: 1em;
                 }
                 .msgButton{
                     margin-top: 10px;
