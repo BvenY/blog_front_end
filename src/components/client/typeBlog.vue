@@ -92,9 +92,12 @@ export default {
             margin-top: 2em;
             width: 90%;
             height: 20%;
-            border-bottom: 1px solid #E8EAED;
+            box-shadow: 0 2px 3px 2px rgba(0,0,0,.1);
             cursor: pointer;
             min-height: 150px;
+            &:hover{
+                box-shadow: 1px 4px 5px 4px rgba(0,0,0,.1);
+            }
             .blogTile{
                 @media screen{
                     width: 100%;

@@ -60,7 +60,7 @@ export default {
             cursor: pointer;
             min-height: 150px;
             &:hover{
-                box-shadow: 0 4px 5px 4px rgba(0,0,0,.1);
+                box-shadow: 1px 4px 5px 4px rgba(0,0,0,.1);
             }
             .blogTile{
                 @media screen{
