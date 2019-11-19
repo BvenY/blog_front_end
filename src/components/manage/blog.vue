@@ -133,7 +133,7 @@ export default {
                         let dates = new Date(+new Date(date) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '');
                         res.data[i].blogTime = dates;
                     }
-                    this.tableData = res.data;
+                    this.tableData = res.data.sort(this.compare('blogTime'));
                     this.pageInfo.pageTotal = res.totalCount;
                     this.loading = false;
                 })
@@ -161,6 +161,14 @@ export default {
                 .catch((err) => {
                     console.log(err);
                 });
+        },
+        // 时间排序函数
+        compare (property) {
+            return function (obj1, obj2) {
+                let value1 = obj1[property];
+                let value2 = obj2[property];
+                return value1 < value2 ? 1 : -1;
+            };
         }
     },
     mounted () {
